@@ -8,7 +8,8 @@ program.version('0.0.1');
 program
   .command('backlog')
   .description('Show the product backlog')
-  .action(function () { new CLI().backlog() });
+  .option('-a, --all', 'Show all stories (instead of just the top 20)')
+  .action(function (opts) { new CLI().backlog(opts) });
 
 program
   .command('sprint')
