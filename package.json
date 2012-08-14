@@ -1,7 +1,7 @@
 {
   "name": "ralio",
   "description": "command-line client for the rallydev API",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Olly Smith <olly.smith@gmail.com>",
   "engines": ["node >= 0.6.0"],
   "dependencies": {
