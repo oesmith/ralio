@@ -1,0 +1,27 @@
+#!/usr/bin/env node
+
+var program = require('commander'),
+    CLI = require('../lib/cli');
+
+program.version('0.0.1');
+
+program
+  .command('backlog')
+  .description('Show the product backlog')
+  .action(function () { new CLI().backlog() });
+
+program
+  .command('sprint')
+  .description('Show the current team iteration')
+  .option('-t, --tasks', 'Show story tasks')
+  .option('-a, --accepted', 'Show accepted stories')
+  .action(function (opts) { new CLI().sprint(opts) });
+
+program
+  .command('show <story>')
+  .description('Show tasks for an individual story')
+  .action(function (story) { new CLI().story(story) });
+
+program.parse(process.argv);
+
+/* vim:set filetype=javascript: */
