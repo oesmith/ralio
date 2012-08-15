@@ -3,7 +3,7 @@
 var program = require('commander'),
     CLI = require('../lib/cli');
 
-program.version('0.0.4');
+program.version('0.0.5');
 
 program
   .command('backlog')
@@ -42,6 +42,11 @@ program
   .command('abandon <task>')
   .description('Set a task state to defined and clear the owner')
   .action(function (task) { new CLI().abandon(task) });
+
+program
+  .command('current')
+  .description('Show your current tasks and stories')
+  .action(function () { new CLI().current() });
 
 program.parse(process.argv);
 

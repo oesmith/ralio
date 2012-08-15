@@ -61,6 +61,9 @@ See the built-in help:
         abandon <task>
         Set a task state to defined and clear the owner
 
+        current
+        Show your current tasks and stories
+
       Options:
 
         -h, --help     output usage information
