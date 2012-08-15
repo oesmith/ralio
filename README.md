@@ -52,6 +52,15 @@ See the built-in help:
         open <story>
         Open a story in a web browser
 
+        start <task>
+        Set a task state to in-progress and assign it to you
+
+        finish <task>
+        Set a task state to completed and assign it to you
+
+        abandon <task>
+        Set a task state to defined and clear the owner
+
       Options:
 
         -h, --help     output usage information
