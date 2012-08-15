@@ -6,6 +6,8 @@ A *usable* command-line client for rally.
 
     $ npm install -g ralio
 
+ralio also uses elinks to format HTML content - install it using homebrew.
+
 ## Configuration
 
 Create a config file in `~/.raliorc`.
@@ -38,7 +40,7 @@ See the built-in help:
 
       Commands:
 
-        backlog
+        backlog [options]
         Show the product backlog
 
         sprint [options]
