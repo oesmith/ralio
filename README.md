@@ -20,15 +20,15 @@ Create a config file in `~/.raliorc`.
     }
 
 `username` and `password` should be self-explanatory.  `project` and `team`
-should contain the name of the Rally projects that correspond to your project
+should contain the names of the Rally projects that correspond to your project
 backlog and your team.  Where I work, we run multiple teams from a common
 product backlog, hence the different options.  If you don't work that way,
 put the same project name in both.
 
-I suggest you `chmod 0600 ~/.raliorc` to prevent your password going walkies.
-In future I'll be stashing credentials in the OS key store.  Unfortunately,
-Rally doesn't use OAuth (or any other kind of API keys), so ralio needs your
-password to work.
+Unfortunately, Rally doesn't use OAuth (or any other kind of API keys), so
+ralio needs your password.  I suggest you `chmod 0600 ~/.raliorc` to prevent
+your password going walkies.  In future I'll be stashing credentials in the OS
+key store.
 
 ## Usage
 
