@@ -103,10 +103,24 @@ describe('Ralio', function () {
     });
   });
 
-  describe('#backlog', function () {});
-  describe('#sprint', function () {});
-  describe('#story', function () {});
-  describe('#setTaskState', function () {});
-  describe('#current', function () {});
+  describe('#backlog', function () {
+    it('should fetch the backlog stories for a given project');
+  });
 
+  describe('#sprint', function () {
+    it('should fetch the sprint stories for a given project');
+  });
+
+  describe('#story', function () {
+    it('should fetch the defect with the given ID');
+    it('should fetch the user story with the given ID');
+  });
+
+  describe('#setTaskState', function () {
+    it('should update the task with the given ID');
+  });
+
+  describe('#current', function () {
+    it('should fetch all the stories that the current user is working on');
+  });
 });
