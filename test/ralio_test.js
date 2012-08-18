@@ -2,6 +2,10 @@ var assert = require('assert'),
     nock = require('nock'),
     Ralio = require('../lib/ralio');
 
+var RALLY_HOST = "rally1.rallydev.com",
+    RALLY_SERVER = "https://" + RALLY_HOST,
+    RALLY_BULK_PATH = "/slm/webservice/1.36/adhoc.js";
+
 describe('Ralio', function () {
 
   before(function () {
@@ -20,7 +24,7 @@ describe('Ralio', function () {
     it('should insert auth credentials', function () {
       assert.equal(
         this.ralio.bulkUrl(),
-        'https://user1:password1@rally1.rallydev.com/slm/webservice/1.36/adhoc.js');
+        'https://user1:password1@' + RALLY_HOST + RALLY_BULK_PATH);
     });
   });
 
@@ -36,8 +40,8 @@ describe('Ralio', function () {
         bar: '/bar',
         baz: '/baz?bap=1%2C2%2C3&bop=bop'
       };
-      nock('https://rally1.rallydev.com')
-        .post('/slm/webservice/1.36/adhoc.js', expectedBody)
+      nock(RALLY_SERVER)
+        .post(RALLY_BULK_PATH, expectedBody)
         .reply(200, {foo: {bar: 'baz'}});
       this.ralio.bulk(request, function (error, data) {
         assert.equal(error, null);
@@ -49,8 +53,8 @@ describe('Ralio', function () {
     it('should catch HTTP errors', function (done) {
       var request = {foo: {}};
       var expectedBody = {foo: '/foo?'};
-      nock('https://rally1.rallydev.com')
-        .post('/slm/webservice/1.36/adhoc.js', expectedBody)
+      nock(RALLY_SERVER)
+        .post(RALLY_BULK_PATH, expectedBody)
         .reply(500, 'OMG BAD THINGS');
       this.ralio.bulk(request, function (error, data) {
         assert.equal(error, 'OMG BAD THINGS');
@@ -104,7 +108,63 @@ describe('Ralio', function () {
   });
 
   describe('#backlog', function () {
-    it('should fetch the backlog stories for a given project');
+    it('should fetch the backlog stories for a given project', function (done) {
+      var request = {
+        hierarchicalrequirement: '/hierarchicalrequirement' +
+          '?fetch=Name%2CFormattedID%2CRank%2CPlanEstimate' +
+          '&order=Rank' +
+          '&query=((Project.Name%20%3D%20%22project1%22)%20AND%20(Iteration%20%3D%20NULL))' +
+          '&pagesize=16',
+        defect: '/defect' +
+          '?fetch=Name%2CFormattedID%2CRank%2CPlanEstimate' +
+          '&order=Rank' +
+          '&query=((Project.Name%20%3D%20%22project1%22)%20AND%20(Iteration%20%3D%20NULL))'+
+          '&pagesize=16'
+      };
+      var result = {
+        hierarchicalrequirement: {
+          Results: [
+            { FormattedID: 'US0000', Rank: 50 },
+            { FormattedID: 'US0001', Rank: 52 },
+            { FormattedID: 'US0002', Rank: 48 },
+            { FormattedID: 'US0003', Rank: 54 },
+            { FormattedID: 'US0004', Rank: 46 },
+            { FormattedID: 'US0005', Rank: 56 }
+          ]
+        },
+        defect: {
+          Results: [
+            { FormattedID: 'DE0000', Rank: 51 },
+            { FormattedID: 'DE0001', Rank: 53 },
+            { FormattedID: 'DE0002', Rank: 49 },
+            { FormattedID: 'DE0003', Rank: 55 },
+            { FormattedID: 'DE0004', Rank: 47 },
+            { FormattedID: 'DE0005', Rank: 57 }
+          ]
+        }
+      };
+      nock(RALLY_SERVER)
+        .post(RALLY_BULK_PATH, request)
+        .reply(200, result);
+      this.ralio.backlog('project1', 16, function (error, stories) {
+        assert.equal(error, null);
+        assert.deepEqual(stories, [
+          { FormattedID: 'US0004', Rank: 46 },
+          { FormattedID: 'DE0004', Rank: 47 },
+          { FormattedID: 'US0002', Rank: 48 },
+          { FormattedID: 'DE0002', Rank: 49 },
+          { FormattedID: 'US0000', Rank: 50 },
+          { FormattedID: 'DE0000', Rank: 51 },
+          { FormattedID: 'US0001', Rank: 52 },
+          { FormattedID: 'DE0001', Rank: 53 },
+          { FormattedID: 'US0003', Rank: 54 },
+          { FormattedID: 'DE0003', Rank: 55 },
+          { FormattedID: 'US0005', Rank: 56 },
+          { FormattedID: 'DE0005', Rank: 57 }
+        ])
+        done();
+      });
+    });
   });
 
   describe('#sprint', function () {
