@@ -227,8 +227,69 @@ describe('Ralio', function () {
   });
 
   describe('#story', function () {
-    it('should fetch the defect with the given ID');
-    it('should fetch the user story with the given ID');
+    it('should fetch the defect with the given ID', function (done) {
+      var ex = sinon.mock(this.ralio).expects('bulk').once()
+        .withArgs({ defect: {
+          fetch: 'Name,FormattedID,PlanEstimate,ScheduleState,Tasks,State,Owner,TaskIndex,Blocked,Project,ObjectID,Description',
+          query: '(FormattedID = "DE4321")'
+        }});
+
+      this.ralio.story('DE4321', function (error, story) {
+        assert.equal(error, null);
+        assert.deepEqual(story, {
+          FormattedID: 'DE4321', Name: 'Test Story', Tasks: [
+            { FormattedID: 'TA0001', TaskIndex: 1 },
+            { FormattedID: 'TA0002', TaskIndex: 2 },
+            { FormattedID: 'TA0000', TaskIndex: 3 }
+          ]
+        });
+        done();
+      });
+
+      ex.yield(null, {
+        defect: {
+          Results: [
+            { FormattedID: 'DE4321', Name: 'Test Story', Tasks: [
+                { FormattedID: 'TA0001', TaskIndex: 1 },
+                { FormattedID: 'TA0002', TaskIndex: 2 },
+                { FormattedID: 'TA0000', TaskIndex: 3 }
+              ] }
+          ]
+        }
+      });
+    });
+
+    it('should fetch the user story with the given ID', function (done) {
+      var ex = sinon.mock(this.ralio).expects('bulk').once()
+        .withArgs({ hierarchicalrequirement: {
+          fetch: 'Name,FormattedID,PlanEstimate,ScheduleState,Tasks,State,Owner,TaskIndex,Blocked,Project,ObjectID,Description',
+          query: '(FormattedID = "US4321")'
+        }});
+
+      this.ralio.story('US4321', function (error, story) {
+        assert.equal(error, null);
+        assert.deepEqual(story, {
+          FormattedID: 'US4321', Name: 'Test Story', Tasks: [
+            { FormattedID: 'TA0001', TaskIndex: 1 },
+            { FormattedID: 'TA0002', TaskIndex: 2 },
+            { FormattedID: 'TA0000', TaskIndex: 3 }
+          ]
+        });
+        done();
+      });
+
+      ex.yield(null, {
+        hierarchicalrequirement: {
+          Results: [
+            { FormattedID: 'US4321', Name: 'Test Story', Tasks: [
+                { FormattedID: 'TA0001', TaskIndex: 1 },
+                { FormattedID: 'TA0002', TaskIndex: 2 },
+                { FormattedID: 'TA0000', TaskIndex: 3 }
+              ] }
+          ]
+        }
+      });
+    });
   });
 
   describe('#setTaskState', function () {
