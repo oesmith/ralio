@@ -326,6 +326,7 @@ describe('Ralio', function () {
         update.yield(null);
         bulk2.yield(null, { task: { Results: [{ 'FormattedID': 'TA00001' }] } });
       });
+
       it('should not update the owner ID if the flag is not set', function (done) {
         var ralio_mock = sinon.mock(this.ralio);
         var bulk1 = ralio_mock.expects('bulk').withArgs({
@@ -346,6 +347,40 @@ describe('Ralio', function () {
         });
 
         this.ralio.setTaskState('TA00001', 'In-Progress', false, function (error, task) {
+          assert.equal(error, null);
+          assert.deepEqual(task, { 'FormattedID': 'TA00001' });
+          done();
+        });
+
+        bulk1.yield(null, {
+          user: { _ref: 'https://example.com/user' },
+          task: { Results: [{ _ref: 'https://example.com/task' }] }
+        });
+        update.yield(null);
+        bulk2.yield(null, { task: { Results: [{ 'FormattedID': 'TA00001' }] } });
+      });
+
+      it('should set the ToDo time to zero when the task state is Completed', function (done) {
+        var ralio_mock = sinon.mock(this.ralio);
+        var bulk1 = ralio_mock.expects('bulk').withArgs({
+          user: {},
+          task: {query: '(FormattedID = "TA00001")'}
+        });
+
+        var update = ralio_mock.expects('update').withArgs('https://example.com/task', {
+            Task: {
+              Owner: null,
+              State: 'Completed',
+              ToDo: 0.0,
+              _ref: 'https://example.com/task'
+            }
+          });
+
+        var bulk2 = ralio_mock.expects('bulk').withArgs({
+          task: {fetch: true, query: '(FormattedID = "TA00001")'}
+        });
+
+        this.ralio.setTaskState('TA00001', 'Completed', false, function (error, task) {
           assert.equal(error, null);
           assert.deepEqual(task, { 'FormattedID': 'TA00001' });
           done();
