@@ -362,6 +362,53 @@ describe('Ralio', function () {
   });
 
   describe('#current', function () {
-    it('should fetch all the stories that the current user is working on');
+    it('should fetch all the stories that the current user is working on', function (done) {
+      var query = {
+        fetch: 'Name,FormattedID,Rank,PlanEstimate,ScheduleState,Tasks,State,Owner,TaskIndex,Blocked',
+        order: 'Rank',
+        query: '((Project.Name = "project3") AND ((Iteration.StartDate <= "1970-01-01") AND (Iteration.EndDate >= "1970-01-01")))',
+        pagesize: 100
+      };
+      var result = {
+        user: { _ref: 'https://example.com/user' },
+        hierarchicalrequirement: {
+          Results: [
+            { FormattedID: 'US0000', Rank: 50, Tasks: [
+                { FormattedID: 'TA0000', TaskIndex: 3, State: 'Completed', Owner: { _ref: 'https://example.com/user' } },
+                { FormattedID: 'TA0001', TaskIndex: 1, State: 'Completed', Owner: { _ref: 'https://example.com/user' } },
+                { FormattedID: 'TA0002', TaskIndex: 2, State: 'Completed', Owner: { _ref: 'https://example.com/user' } },
+              ] },
+            { FormattedID: 'US0001', Rank: 52, Tasks: [] },
+          ]
+        },
+        defect: {
+          Results: [
+            { FormattedID: 'DE0000', Rank: 51, Tasks: [
+                { FormattedID: 'TA0003', TaskIndex: 1, State: 'In-Progress', Owner: null },
+                { FormattedID: 'TA0004', TaskIndex: 11, State: 'Defined', Owner: null },
+              ] },
+            { FormattedID: 'DE0001', Rank: 53, Tasks: [
+                { FormattedID: 'TA0005', TaskIndex: 0, State: 'In-Progress', Owner: { _ref: 'https://example.com/user' } }
+              ] },
+          ]
+        }
+      }
+      var mock = sinon.mock(this.ralio);
+      mock.expects('date').once().returns('1970-01-01');
+      var ex = mock.expects('bulk').once()
+        .withArgs({ user: {}, hierarchicalrequirement: query, defect: query });
+
+      this.ralio.current('project3', function (error, stories) {
+        assert.equal(error, null);
+        assert.deepEqual(stories, [
+          { FormattedID: 'DE0001', Rank: 53, Tasks: [
+              { FormattedID: 'TA0005', TaskIndex: 0, State: 'In-Progress', Owner: { _ref: 'https://example.com/user' } }
+            ] },
+        ])
+        done();
+      });
+
+      ex.yield(null, result);
+    });
   });
 });
