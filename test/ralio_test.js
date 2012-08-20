@@ -1,6 +1,9 @@
 var assert = require('assert'),
     nock = require('nock'),
+    sinon = require('sinon'),
     Ralio = require('../lib/ralio');
+
+require('sinon-mocha').enhance(sinon);
 
 var RALLY_HOST = "rally1.rallydev.com",
     RALLY_SERVER = "https://" + RALLY_HOST,
@@ -109,19 +112,13 @@ describe('Ralio', function () {
 
   describe('#backlog', function () {
     it('should fetch the backlog stories for a given project', function (done) {
-      var request = {
-        hierarchicalrequirement: '/hierarchicalrequirement' +
-          '?fetch=Name%2CFormattedID%2CRank%2CPlanEstimate' +
-          '&order=Rank' +
-          '&query=((Project.Name%20%3D%20%22project1%22)%20AND%20(Iteration%20%3D%20NULL))' +
-          '&pagesize=16',
-        defect: '/defect' +
-          '?fetch=Name%2CFormattedID%2CRank%2CPlanEstimate' +
-          '&order=Rank' +
-          '&query=((Project.Name%20%3D%20%22project1%22)%20AND%20(Iteration%20%3D%20NULL))'+
-          '&pagesize=16'
+      var query = {
+        fetch: 'Name,FormattedID,Rank,PlanEstimate',
+        order: 'Rank',
+        query: '((Project.Name = "project1") AND (Iteration = NULL))',
+        pagesize: 16
       };
-      var result = {
+      var query_result = {
         hierarchicalrequirement: {
           Results: [
             { FormattedID: 'US0000', Rank: 50 },
@@ -142,10 +139,10 @@ describe('Ralio', function () {
             { FormattedID: 'DE0005', Rank: 57 }
           ]
         }
-      };
-      nock(RALLY_SERVER)
-        .post(RALLY_BULK_PATH, request)
-        .reply(200, result);
+      }
+      var ex = sinon.mock(this.ralio).expects('bulk').once()
+        .withArgs({ hierarchicalrequirement: query, defect: query });
+
       this.ralio.backlog('project1', 16, function (error, stories) {
         assert.equal(error, null);
         assert.deepEqual(stories, [
@@ -164,11 +161,69 @@ describe('Ralio', function () {
         ])
         done();
       });
+
+      ex.yield(null, query_result);
     });
   });
 
   describe('#sprint', function () {
-    it('should fetch the sprint stories for a given project');
+    it('should fetch the sprint stories for a given project', function (done) {
+      var query = {
+        fetch: 'Name,FormattedID,Rank,PlanEstimate,ScheduleState,Tasks,State,Owner,TaskIndex,Blocked',
+        order: 'Rank',
+        query: '((Project.Name = "project2") AND ((Iteration.StartDate <= "1970-01-01") AND (Iteration.EndDate >= "1970-01-01")))',
+        pagesize: 100
+      };
+      var result = {
+        hierarchicalrequirement: {
+          Results: [
+            { FormattedID: 'US0000', Rank: 50, Tasks: [
+                { FormattedID: 'TA0000', TaskIndex: 3 },
+                { FormattedID: 'TA0001', TaskIndex: 1 },
+                { FormattedID: 'TA0002', TaskIndex: 2 },
+              ] },
+            { FormattedID: 'US0001', Rank: 52, Tasks: [] },
+          ]
+        },
+        defect: {
+          Results: [
+            { FormattedID: 'DE0000', Rank: 51, Tasks: [
+                { FormattedID: 'TA0003', TaskIndex: 1 },
+                { FormattedID: 'TA0004', TaskIndex: 11 },
+              ] },
+            { FormattedID: 'DE0001', Rank: 53, Tasks: [
+                { FormattedID: 'TA0005', TaskIndex: 0 }
+              ] },
+          ]
+        }
+      }
+      var mock = sinon.mock(this.ralio);
+      mock.expects('date').once().returns('1970-01-01');
+      var ex = mock.expects('bulk').once()
+        .withArgs({hierarchicalrequirement: query, defect: query});
+
+      this.ralio.sprint('project2', function (error, stories) {
+        assert.equal(error, null);
+        assert.deepEqual(stories, [
+          { FormattedID: 'US0000', Rank: 50, Tasks: [
+              { FormattedID: 'TA0001', TaskIndex: 1 },
+              { FormattedID: 'TA0002', TaskIndex: 2 },
+              { FormattedID: 'TA0000', TaskIndex: 3 }
+            ] },
+          { FormattedID: 'DE0000', Rank: 51, Tasks: [
+              { FormattedID: 'TA0003', TaskIndex: 1 },
+              { FormattedID: 'TA0004', TaskIndex: 11 }
+            ] },
+          { FormattedID: 'US0001', Rank: 52, Tasks: [] },
+          { FormattedID: 'DE0001', Rank: 53, Tasks: [
+              { FormattedID: 'TA0005', TaskIndex: 0 }
+            ] },
+        ])
+        done();
+      });
+
+      ex.yield(null, result);
+    });
   });
 
   describe('#story', function () {
