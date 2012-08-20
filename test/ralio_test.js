@@ -293,7 +293,72 @@ describe('Ralio', function () {
   });
 
   describe('#setTaskState', function () {
-    it('should update the task with the given ID');
+    describe('should update the task with the given ID', function () {
+      it('should update the owner ID if the flag is set', function (done) {
+        var ralio_mock = sinon.mock(this.ralio);
+        var bulk1 = ralio_mock.expects('bulk').withArgs({
+          user: {},
+          task: {query: '(FormattedID = "TA00001")'}
+        });
+
+        var update = ralio_mock.expects('update').withArgs('https://example.com/task', {
+            Task: {
+              Owner: 'https://example.com/user',
+              State: 'In-Progress',
+              _ref: 'https://example.com/task'
+            }
+          });
+
+        var bulk2 = ralio_mock.expects('bulk').withArgs({
+          task: {fetch: true, query: '(FormattedID = "TA00001")'}
+        });
+
+        this.ralio.setTaskState('TA00001', 'In-Progress', true, function (error, task) {
+          assert.equal(error, null);
+          assert.deepEqual(task, { 'FormattedID': 'TA00001' });
+          done();
+        });
+
+        bulk1.yield(null, {
+          user: { _ref: 'https://example.com/user' },
+          task: { Results: [{ _ref: 'https://example.com/task' }] }
+        });
+        update.yield(null);
+        bulk2.yield(null, { task: { Results: [{ 'FormattedID': 'TA00001' }] } });
+      });
+      it('should not update the owner ID if the flag is not set', function (done) {
+        var ralio_mock = sinon.mock(this.ralio);
+        var bulk1 = ralio_mock.expects('bulk').withArgs({
+          user: {},
+          task: {query: '(FormattedID = "TA00001")'}
+        });
+
+        var update = ralio_mock.expects('update').withArgs('https://example.com/task', {
+            Task: {
+              Owner: null,
+              State: 'In-Progress',
+              _ref: 'https://example.com/task'
+            }
+          });
+
+        var bulk2 = ralio_mock.expects('bulk').withArgs({
+          task: {fetch: true, query: '(FormattedID = "TA00001")'}
+        });
+
+        this.ralio.setTaskState('TA00001', 'In-Progress', false, function (error, task) {
+          assert.equal(error, null);
+          assert.deepEqual(task, { 'FormattedID': 'TA00001' });
+          done();
+        });
+
+        bulk1.yield(null, {
+          user: { _ref: 'https://example.com/user' },
+          task: { Results: [{ _ref: 'https://example.com/task' }] }
+        });
+        update.yield(null);
+        bulk2.yield(null, { task: { Results: [{ 'FormattedID': 'TA00001' }] } });
+      });
+    });
   });
 
   describe('#current', function () {
