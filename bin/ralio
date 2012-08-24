@@ -47,6 +47,16 @@ program
   .action(function (task) { new CLI().abandon(task) });
 
 program
+  .command('block <task>')
+  .description('Set a task state to blocked')
+  .action(function (task) { new CLI().block(task) });
+
+program
+  .command('unblock <task>')
+  .description('Set a task state to unblocked')
+  .action(function (task) { new CLI().unblock(task) });
+
+program
   .command('current')
   .description('Show your current tasks and stories')
   .action(function () { new CLI().current() });

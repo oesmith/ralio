@@ -336,7 +336,7 @@ describe('Ralio', function () {
           task: {fetch: true, query: '(FormattedID = "TA00001")'}
         });
 
-        this.ralio.setTaskState('TA00001', 'In-Progress', true, function (error, task) {
+        this.ralio.setTaskState('TA00001', {state: 'In-Progress', own: true}, function (error, task) {
           assert.equal(error, null);
           assert.deepEqual(task, { 'FormattedID': 'TA00001' });
           done();
@@ -369,7 +369,7 @@ describe('Ralio', function () {
           task: {fetch: true, query: '(FormattedID = "TA00001")'}
         });
 
-        this.ralio.setTaskState('TA00001', 'In-Progress', false, function (error, task) {
+        this.ralio.setTaskState('TA00001', {state: 'In-Progress'}, function (error, task) {
           assert.equal(error, null);
           assert.deepEqual(task, { 'FormattedID': 'TA00001' });
           done();
@@ -403,7 +403,7 @@ describe('Ralio', function () {
           task: {fetch: true, query: '(FormattedID = "TA00001")'}
         });
 
-        this.ralio.setTaskState('TA00001', 'Completed', false, function (error, task) {
+        this.ralio.setTaskState('TA00001', {state: 'Completed'}, function (error, task) {
           assert.equal(error, null);
           assert.deepEqual(task, { 'FormattedID': 'TA00001' });
           done();
@@ -417,6 +417,8 @@ describe('Ralio', function () {
         bulk2.yield(null, { task: { Results: [{ 'FormattedID': 'TA00001' }] } });
       });
     });
+    it('should block the task when the blocked flag is set to true');
+    it('should unblock the task when the blocked flag is set to true');
   });
 
   describe('#current', function () {
