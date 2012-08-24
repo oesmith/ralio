@@ -49,6 +49,11 @@ program
   .description('Show your current tasks and stories')
   .action(function () { new CLI().current() });
 
+program
+  .command('point <story> <points>')
+  .description('Set the points for a story')
+  .action(function (story, points) { new CLI().point(story, parseInt(points, 10)) });
+
 program.parse(process.argv);
 
 /* vim:set filetype=javascript: */
