@@ -64,8 +64,10 @@ See the built-in help:
         current
         Show your current tasks and stories
 
+        point <story> <points>
+        Set the points for a story
+
       Options:
 
         -h, --help     output usage information
         -V, --version  output the version number
-
