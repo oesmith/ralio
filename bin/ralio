@@ -10,6 +10,7 @@ program
   .description('Show the product backlog')
   .option('-a, --all', 'Show all stories (instead of just the top 20)')
   .option('-t, --tag [tag]', 'Show stories tagged with [tag]')
+  .option('-p, --project [project]', 'Show backlog stories for project [project]')
   .action(function (opts) { new CLI().backlog(opts) });
 
 program
@@ -17,6 +18,7 @@ program
   .description('Show the current team iteration')
   .option('-t, --tasks', 'Show story tasks')
   .option('-a, --accepted', 'Show accepted stories')
+  .option('-p, --project [project]', 'Show sprint stories for project [project]')
   .action(function (opts) { new CLI().sprint(opts) });
 
 program
