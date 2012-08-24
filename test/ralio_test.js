@@ -113,7 +113,7 @@ describe('Ralio', function () {
   describe('#backlog', function () {
     it('should fetch the backlog stories for a given project', function (done) {
       var query = {
-        fetch: 'Name,FormattedID,Rank,PlanEstimate',
+        fetch: 'Name,FormattedID,Rank,PlanEstimate,Tags',
         order: 'Rank',
         query: '((Project.Name = "project1") AND (Iteration = NULL))',
         pagesize: 16
@@ -143,7 +143,7 @@ describe('Ralio', function () {
       var ex = sinon.mock(this.ralio).expects('bulk').once()
         .withArgs({ hierarchicalrequirement: query, defect: query });
 
-      this.ralio.backlog('project1', 16, function (error, stories) {
+      this.ralio.backlog({projectName: 'project1', pagesize: 16}, function (error, stories) {
         assert.equal(error, null);
         assert.deepEqual(stories, [
           { FormattedID: 'US0004', Rank: 46 },
@@ -159,6 +159,29 @@ describe('Ralio', function () {
           { FormattedID: 'US0005', Rank: 56 },
           { FormattedID: 'DE0005', Rank: 57 }
         ])
+        done();
+      });
+
+      ex.yield(null, query_result);
+    });
+
+    it('should fetch the backlog stories for the current project filtered by a tag', function (done) {
+      var query = {
+        fetch: 'Name,FormattedID,Rank,PlanEstimate,Tags',
+        order: 'Rank',
+        query: '((Project.Name = "project1") AND ((Iteration = NULL) AND (Tags.Name = "tag1")))',
+        pagesize: 16
+      };
+      var query_result = {
+        hierarchicalrequirement: { Results: [] },
+        defect: { Results: [] }
+      }
+      var ex = sinon.mock(this.ralio).expects('bulk').once()
+        .withArgs({ hierarchicalrequirement: query, defect: query });
+
+      this.ralio.backlog({projectName: 'project1', pagesize: 16, tag: 'tag1'}, function (error, stories) {
+        assert.equal(error, null);
+        assert.deepEqual(stories, [])
         done();
       });
 
@@ -446,4 +469,14 @@ describe('Ralio', function () {
       ex.yield(null, result);
     });
   });
+
+  describe('#block', function () {
+    it('should block the given task if the block flag is true');
+    it('should unblock the given task if the block flag is false');
+  });
+
+  describe('#point', function () {
+    it('should update the given story with the given points value');
+  });
+
 });
