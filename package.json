@@ -1,8 +1,22 @@
 {
   "name": "ralio",
   "description": "command-line client for the rallydev API",
-  "version": "0.0.9",
-  "author": "Olly Smith <olly.smith@gmail.com>",
+  "version": "0.0.10",
+  "author": {
+    "name": "Olly Smith",
+    "email": "olly.smith@gmail.com",
+    "url": "http://www.oesmith.co.uk"
+  },
+  "contributors": [
+    {
+      "name": "Igor Escobar",
+      "url": "https://github.com/igorescobar" 
+    },
+    {
+      "name": "Tom Garbutt",
+      "url": "https://github.com/tommg"
+    }
+  ],
   "engines": ["node >= 0.6.0"],
   "dependencies": {
     "request": "2.9.203",
