@@ -71,3 +71,7 @@ See the built-in help:
 
         -h, --help     output usage information
         -V, --version  output the version number
+
+## Contributing
+
+Contributions very welcome! Please write tests for any new features - use [mocha](http://visionmedia.github.com/mocha/) to run the test suite.
