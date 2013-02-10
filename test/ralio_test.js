@@ -564,4 +564,25 @@ describe('#task', function() {
        // mocked returns
        mock_request.yield(null, {'task': {'TotalResultCount': 1, 'Results': [{'_ref': 'https://example.com/task'}]}});
     });
+
+    it('should return task not found if TotalResultCount is zero', function(done) {
+      var ralio_mock = sinon.mock(this.ralio);
+
+      var options = {
+          user: {},
+          task: {query: '(FormattedID = "TA1234")'}
+        }
+
+       var mock_request = ralio_mock.expects('bulk').withArgs(options);
+
+       this.ralio.getTask('TA1234', function(error, resource) {
+        assert.equal(error, 'Task Not Found!');
+        assert.deepEqual(resource, null);
+        done();
+       }); 
+
+
+       // mocked returns
+       mock_request.yield(null, {'task': {'TotalResultCount': 0, 'Results': []}});
+    });
 });
