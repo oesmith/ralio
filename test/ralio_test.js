@@ -543,4 +543,25 @@ describe('Ralio', function () {
     });
   });
 
+describe('#task', function() {
+  describe('getTask Method', function(){
+    it('should return task object when a task id was given', function(done) {
+       var ralio_mock = sinon.mock(this.ralio);
+
+       var options = {
+          user: {},
+          task: {query: '(FormattedID = "TA1234")'}
+        }
+
+       var mock_request = ralio_mock.expects('bulk').withArgs(options);
+
+       this.ralio.getTask('TA1234', function(error, resource) {
+        assert.equal(error, null);
+        assert.deepEqual(resource, {'_ref': 'https://example.com/task'});
+        done();
+       }); 
+
+       // mocked returns
+       mock_request.yield(null, {'task': {'TotalResultCount': 1, 'Results': [{'_ref': 'https://example.com/task'}]}});
+    });
 });
