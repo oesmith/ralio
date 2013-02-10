@@ -585,4 +585,33 @@ describe('#task', function() {
        // mocked returns
        mock_request.yield(null, {'task': {'TotalResultCount': 0, 'Results': []}});
     });
+    describe('createTask Method', function(){
+      it('should create a task with success', function(done){ 
+        var ralio_mock = sinon.mock(this.ralio);
+        var story_request = ralio_mock.expects('story').withArgs('US1234');
+
+        var options = {
+          url: this.ralio.bulkUrl({"pathname":"/slm/webservice/1.36/task/create.js"}),
+          method: 'POST',
+          json: {
+            Task: {
+              Name: "my task name",
+              Project: "https://example.com/project",
+              WorkProduct: "https://example.com/story"
+            }
+          },
+          strictSSL: !Ralio.test
+        };
+
+        var mock_request = ralio_mock.expects('request').withArgs(options);
+        this.ralio.createTask('hokage', 'US1234', 'my task name', function(var1, var2, data, taskName){
+          assert.deepEqual(data, {});
+          assert.equal(taskName, 'my task name');
+        });
+
+        done();
+        story_request.yield(null, {'_ref':'https://example.com/story', 'Project': {'_ref': 'https://example.com/project'}});
+        mock_request.yield(null, {'CreateResult':{'Object': {}}});
+      });
+    });
 });
