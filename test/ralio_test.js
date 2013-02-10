@@ -543,4 +543,122 @@ describe('Ralio', function () {
     });
   });
 
+describe('#task', function() {
+  describe('getTask Method', function(){
+    it('should return task object when a task id was given', function(done) {
+       var ralio_mock = sinon.mock(this.ralio);
+
+       var options = {
+          user: {},
+          task: {query: '(FormattedID = "TA1234")'}
+        }
+
+       var mock_request = ralio_mock.expects('bulk').withArgs(options);
+
+       this.ralio.getTask('TA1234', function(error, resource) {
+        assert.equal(error, null);
+        assert.deepEqual(resource, {'_ref': 'https://example.com/task'});
+        done();
+       }); 
+
+       // mocked returns
+       mock_request.yield(null, {'task': {'TotalResultCount': 1, 'Results': [{'_ref': 'https://example.com/task'}]}});
+    });
+
+    it('should return task not found if TotalResultCount is zero', function(done) {
+      var ralio_mock = sinon.mock(this.ralio);
+
+      var options = {
+          user: {},
+          task: {query: '(FormattedID = "TA1234")'}
+        }
+
+       var mock_request = ralio_mock.expects('bulk').withArgs(options);
+
+       this.ralio.getTask('TA1234', function(error, resource) {
+        assert.equal(error, 'Task Not Found!');
+        assert.deepEqual(resource, null);
+        done();
+       }); 
+
+
+       // mocked returns
+       mock_request.yield(null, {'task': {'TotalResultCount': 0, 'Results': []}});
+    });
+    describe('createTask Method', function(){
+      it('should create a task with success', function(done){ 
+        var ralio_mock = sinon.mock(this.ralio);
+        var story_request = ralio_mock.expects('story').withArgs('US1234');
+
+        var options = {
+          url: this.ralio.bulkUrl({"pathname":"/slm/webservice/1.36/task/create.js"}),
+          method: 'POST',
+          json: {
+            Task: {
+              Name: "my task name",
+              Project: "https://example.com/project",
+              WorkProduct: "https://example.com/story"
+            }
+          },
+          strictSSL: !Ralio.test
+        };
+
+        var mock_request = ralio_mock.expects('request').withArgs(options);
+        this.ralio.createTask('hokage', 'US1234', 'my task name', function(var1, var2, data, taskName){
+          assert.deepEqual(data, {});
+          assert.equal(taskName, 'my task name');
+        });
+
+        done();
+        story_request.yield(null, {'_ref':'https://example.com/story', 'Project': {'_ref': 'https://example.com/project'}});
+        mock_request.yield(null, {'CreateResult':{'Object': {}}});
+      });
+    });
+    describe('deleteTask Method', function(){
+      it('should delete a task with success', function(done){ 
+        var ralio_mock = sinon.mock(this.ralio);
+        var get_task = ralio_mock.expects('getTask').withArgs('TA1234');
+
+        var options = {
+          url: "https://user1:password1@rally1.rallydev.com/TA1234.js",
+          method: 'DELETE',
+          json: {},
+          strictSSL: !Ralio.test
+        };
+
+        var mock_request = ralio_mock.expects('request').withArgs(options);
+
+        this.ralio.deleteTask('hokage', 'TA1234', function(task){
+          assert(task, 'TA1234 deleted');
+        });
+
+        done();
+        
+        get_task.yield(null, {'_ref':'https://example.com/TA1234.js'})
+        mock_request.yield(null, {});
+      });
+    });
+  });
+
+  describe('creating tasks', function(){
+    it('should call the createTask method', function(){
+      var ralio_mock = sinon.mock(this.ralio);
+      var mock_request = ralio_mock.expects('createTask').withArgs('hokage', 'US1234', 'my new task');
+
+      this.ralio.task('create', 'hokage', 'US1234', 'my new task', function(){});
+
+      mock_request.yield(null);
+    });
+
+    it('should call the deleteTask method', function(){
+      var ralio_mock = sinon.mock(this.ralio);
+      var mock_request = ralio_mock.expects('deleteTask').withArgs('hokage', 'TA1234');
+
+      this.ralio.task('delete', 'hokage', 'TA1234', null, function(){});
+
+      mock_request.yield(null);
+    });
+  });
+});
+
 });
