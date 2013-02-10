@@ -614,4 +614,29 @@ describe('#task', function() {
         mock_request.yield(null, {'CreateResult':{'Object': {}}});
       });
     });
+    describe('deleteTask Method', function(){
+      it('should delete a task with success', function(done){ 
+        var ralio_mock = sinon.mock(this.ralio);
+        var get_task = ralio_mock.expects('getTask').withArgs('TA1234');
+
+        var options = {
+          url: "https://user1:password1@rally1.rallydev.com/TA1234.js",
+          method: 'DELETE',
+          json: {},
+          strictSSL: !Ralio.test
+        };
+
+        var mock_request = ralio_mock.expects('request').withArgs(options);
+
+        this.ralio.deleteTask('hokage', 'TA1234', function(task){
+          assert(task, 'TA1234 deleted');
+        });
+
+        done();
+        
+        get_task.yield(null, {'_ref':'https://example.com/TA1234.js'})
+        mock_request.yield(null, {});
+      });
+    });
+  });
 });
