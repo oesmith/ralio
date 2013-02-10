@@ -639,4 +639,26 @@ describe('#task', function() {
       });
     });
   });
+
+  describe('creating tasks', function(){
+    it('should call the createTask method', function(){
+      var ralio_mock = sinon.mock(this.ralio);
+      var mock_request = ralio_mock.expects('createTask').withArgs('hokage', 'US1234', 'my new task');
+
+      this.ralio.task('create', 'hokage', 'US1234', 'my new task', function(){});
+
+      mock_request.yield(null);
+    });
+
+    it('should call the deleteTask method', function(){
+      var ralio_mock = sinon.mock(this.ralio);
+      var mock_request = ralio_mock.expects('deleteTask').withArgs('hokage', 'TA1234');
+
+      this.ralio.task('delete', 'hokage', 'TA1234', null, function(){});
+
+      mock_request.yield(null);
+    });
+  });
+});
+
 });
