@@ -66,6 +66,25 @@ program
   .description('Set the points for a story')
   .action(function (story, points) { new CLI().point(story, parseInt(points, 10)) });
 
+program
+  .command('task <option> <target>')
+  .description('Allow you to create and delete story tasks.\n' + 
+      'Available options <option> [create|delete].\n' + 
+      'In case of <option> create, <target> is the story name.\n' +
+      'In case of <option> delete, <target> is the task itself.')
+  .option('-n, --name [name]', 'Name [name] of the task')
+  .option('-p, --project [project]', 'Create/delete a task from a specific project [project]')
+  .action(function (opts, option, target) { new CLI().task(opts, option, target) });
+
+
+program.on('--help', function(){
+  console.log('  Usage examples of the task command to create and delete story tasks:');
+  console.log('');
+  console.log('    $ ralio task create US1234 -n "name of the task"');
+  console.log('    $ ralio task delete TA54322');
+  console.log('');
+});
+
 program.parse(process.argv);
 
 /* vim:set filetype=javascript: */
