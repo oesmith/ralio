@@ -544,6 +544,48 @@ describe('Ralio', function () {
   });
 
 describe('#task', function() {
+  describe('#getTag', function(){
+    it('should return a tag object', function(done){
+      var ralio_mock = sinon.mock(this.ralio);
+
+       var options = {
+          tag: {fetch: true, query: '(Name = "BLUE TASK")'}
+        };
+
+       var mock_request = ralio_mock.expects('bulk').withArgs(options);
+
+       this.ralio.getTag('BLUE TASK', function(error, resource) {
+        assert.equal(error, null);
+        assert.deepEqual(resource, {'_ref': 'https://example.com/task'});
+        done();
+       }); 
+
+       // mocked returns
+       mock_request.yield(null, {'tag': {'TotalResultCount': 1, 'Results': [{'_ref': 'https://example.com/task'}]}});
+
+    });
+
+    it('should return tag not found', function(done){
+      var ralio_mock = sinon.mock(this.ralio);
+
+       var options = {
+          tag: {fetch: true, query: '(Name = "UNKNOW TASK")'}
+        };
+
+       var mock_request = ralio_mock.expects('bulk').withArgs(options);
+
+       this.ralio.getTag('UNKNOW TASK', function(error, resource) {
+        assert.equal(error, 'Tag UNKNOW TASK Not Found!');
+        assert.deepEqual(resource, undefined);
+        done();
+       }); 
+
+       // mocked returns
+       mock_request.yield(null, {'tag': {'TotalResultCount': 0, 'Results': []}});
+
+    });
+  });
+
   describe('getTask Method', function(){
     it('should return task object when a task id was given', function(done) {
        var ralio_mock = sinon.mock(this.ralio);
@@ -581,13 +623,14 @@ describe('#task', function() {
         done();
        }); 
 
-
        // mocked returns
        mock_request.yield(null, {'task': {'TotalResultCount': 0, 'Results': []}});
     });
     describe('createTask Method', function(){
-      it('should create a task with success', function(done){ 
+      it('should create a task with success without tags', function(done){ 
+        var clock = sinon.useFakeTimers();
         var ralio_mock = sinon.mock(this.ralio);
+        var tag_request = ralio_mock.expects('getTags').withArgs([]);
         var story_request = ralio_mock.expects('story').withArgs('US1234');
 
         var options = {
@@ -597,25 +640,67 @@ describe('#task', function() {
             Task: {
               Name: "my task name",
               Project: "https://example.com/project",
-              WorkProduct: "https://example.com/story"
+              WorkProduct: "https://example.com/story",
+              Tags: []
             }
           },
           strictSSL: !Ralio.test
         };
 
         var mock_request = ralio_mock.expects('request').withArgs(options);
-        this.ralio.createTask('hokage', 'US1234', 'my task name', function(var1, var2, data, taskName){
+
+        this.ralio.createTask('hokage', 'US1234', 'my task name', [], function(var1, var2, data, taskName){
           assert.deepEqual(data, {});
           assert.equal(taskName, 'my task name');
         });
 
+        clock.tick(300);
+
         done();
+        tag_request.yield(null, []);
+        story_request.yield(null, {'_ref':'https://example.com/story', 'Project': {'_ref': 'https://example.com/project'}});
+        mock_request.yield(null, {'CreateResult':{'Object': {}}});
+      });
+
+      it('should create a task with success with tags', function(done){ 
+        var clock = sinon.useFakeTimers();
+
+        var ralio_mock = sinon.mock(this.ralio);
+        var tag_request = ralio_mock.expects('getTags').withArgs(['BLUE TASK']);
+        var story_request = ralio_mock.expects('story').withArgs('US1234');
+
+        var options = {
+          url: this.ralio.bulkUrl({"pathname":"/slm/webservice/1.36/task/create.js"}),
+          method: 'POST',
+          json: {
+            Task: {
+              Name: "my task name",
+              Project: "https://example.com/project",
+              WorkProduct: "https://example.com/story",
+              Tags: [{'_ref':'https://example.com/tag/12312312.js'}]
+            }
+          },
+          strictSSL: !Ralio.test
+        };
+
+        var mock_request = ralio_mock.expects('request').withArgs(options);
+
+        this.ralio.createTask('hokage', 'US1234', 'my task name', ['BLUE TASK'], function(var1, var2, data, taskName){
+          assert.deepEqual(data, {});
+          assert.equal(taskName, 'my task name');
+        });
+
+        clock.tick(600);
+
+        done();
+        tag_request.yield(null, {'_ref':'https://example.com/tag/12312312.js'});
         story_request.yield(null, {'_ref':'https://example.com/story', 'Project': {'_ref': 'https://example.com/project'}});
         mock_request.yield(null, {'CreateResult':{'Object': {}}});
       });
     });
+
     describe('deleteTask Method', function(){
-      it('should delete a task with success', function(done){ 
+      it('should delete a task with success', function(done) { 
         var ralio_mock = sinon.mock(this.ralio);
         var get_task = ralio_mock.expects('getTask').withArgs('TA1234');
 
@@ -628,7 +713,7 @@ describe('#task', function() {
 
         var mock_request = ralio_mock.expects('request').withArgs(options);
 
-        this.ralio.deleteTask('hokage', 'TA1234', function(task){
+        this.ralio.deleteTask('hokage', 'TA1234', function(task) {
           assert(task, 'TA1234 deleted');
         });
 
@@ -645,7 +730,7 @@ describe('#task', function() {
       var ralio_mock = sinon.mock(this.ralio);
       var mock_request = ralio_mock.expects('createTask').withArgs('hokage', 'US1234', 'my new task');
 
-      this.ralio.task('create', 'hokage', 'US1234', 'my new task', function(){});
+      this.ralio.task('create', 'hokage', 'US1234', 'my new task', [], function(){});
 
       mock_request.yield(null);
     });
@@ -654,7 +739,7 @@ describe('#task', function() {
       var ralio_mock = sinon.mock(this.ralio);
       var mock_request = ralio_mock.expects('deleteTask').withArgs('hokage', 'TA1234');
 
-      this.ralio.task('delete', 'hokage', 'TA1234', null, function(){});
+      this.ralio.task('delete', 'hokage', 'TA1234', null, [], function(){});
 
       mock_request.yield(null);
     });
