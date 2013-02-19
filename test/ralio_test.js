@@ -452,11 +452,11 @@ describe('Ralio', function () {
         },
         defect: {
           Results: [
-            { FormattedID: 'DE0000', Rank: 51, Tasks: [
+            { FormattedID: 'DE0000', Rank: 51, State: 'Open', Owner: null, Tasks: [
                 { FormattedID: 'TA0003', TaskIndex: 1, State: 'In-Progress', Owner: null },
                 { FormattedID: 'TA0004', TaskIndex: 11, State: 'Defined', Owner: null },
               ] },
-            { FormattedID: 'DE0001', Rank: 53, Tasks: [
+            { FormattedID: 'DE0001', Rank: 53, State: 'Open', Owner: { _ref: 'https://example.com/user' }, Tasks: [
                 { FormattedID: 'TA0005', TaskIndex: 0, State: 'In-Progress', Owner: { _ref: 'https://example.com/user' } }
               ] },
           ]
@@ -464,13 +464,13 @@ describe('Ralio', function () {
       }
       var mock = sinon.mock(this.ralio);
       mock.expects('date').once().returns('1970-01-01');
-      var ex = mock.expects('bulk').once()
-        .withArgs({ user: {}, hierarchicalrequirement: query, defect: query });
+      var ex = mock.expects('bulk').once().withArgs({ user: {}, hierarchicalrequirement: query, defect: query });
 
       this.ralio.current('project3', function (error, stories) {
         assert.equal(error, null);
+      
         assert.deepEqual(stories, [
-          { FormattedID: 'DE0001', Rank: 53, Tasks: [
+          { FormattedID: 'DE0001', Rank: 53, State: 'Open', Owner: { _ref: 'https://example.com/user' }, Tasks: [
               { FormattedID: 'TA0005', TaskIndex: 0, State: 'In-Progress', Owner: { _ref: 'https://example.com/user' } }
             ] },
         ])
