@@ -33,27 +33,27 @@ program
 
 program
   .command('start <task>')
-  .description('Set a task state to in-progress and assign it to you')
+  .description('Set a task or defect state to in-progress and assign it to you')
   .action(function (task) { new CLI().start(task) });
 
 program
   .command('finish <task>')
-  .description('Set a task state to completed and assign it to you')
+  .description('Set a task or defect state to completed and assign it to you')
   .action(function (task) { new CLI().finish(task) });
 
 program
   .command('abandon <task>')
-  .description('Set a task state to defined and clear the owner')
+  .description('Set a task or defect state to defined and clear the owner')
   .action(function (task) { new CLI().abandon(task) });
 
 program
   .command('block <task>')
-  .description('Set a task state to blocked')
+  .description('Set a task or defect state to blocked')
   .action(function (task) { new CLI().block(task) });
 
 program
   .command('unblock <task>')
-  .description('Set a task state to unblocked')
+  .description('Set a task or defect state to unblocked')
   .action(function (task) { new CLI().unblock(task) });
 
 program
