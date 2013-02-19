@@ -24,12 +24,12 @@ program
 program
   .command('show <item>')
   .description('Show related information for an individual story, defect or task')
-  .action(function (item) { new CLI().show(story) });
+  .action(function (item) { new CLI().show(item) });
 
 program
   .command('open <item>')
   .description('Open a story, defect or task in a web browser')
-  .action(function (item) { new CLI().open(story) });
+  .action(function (item) { new CLI().open(item) });
 
 program
   .command('start <task>')
