@@ -32,29 +32,31 @@ program
   .action(function (item) { new CLI().open(item) });
 
 program
-  .command('start <task>')
+  .command('start <item>')
   .description('Set a task or defect state to in-progress and assign it to you')
-  .action(function (task) { new CLI().start(task) });
+  .action(function (item) { new CLI().start(item) });
 
 program
-  .command('finish <task>')
+  .command('finish <item>')
+  .option('-c, --rootcause [rootcause]', 'Set defect\'s root cause.')
+  .option('-r, --resolution [resolution]', 'Set defect\'s resolution.')
   .description('Set a task or defect state to completed and assign it to you')
-  .action(function (task) { new CLI().finish(task) });
+  .action(function (item, opts) { new CLI().finish(item, opts) });
 
 program
-  .command('abandon <task>')
+  .command('abandon <item>')
   .description('Set a task or defect state to defined and clear the owner')
-  .action(function (task) { new CLI().abandon(task) });
+  .action(function (item) { new CLI().abandon(item) });
 
 program
-  .command('block <task>')
+  .command('block <item>')
   .description('Set a task or defect state to blocked')
-  .action(function (task) { new CLI().block(task) });
+  .action(function (item) { new CLI().block(item) });
 
 program
-  .command('unblock <task>')
+  .command('unblock <item>')
   .description('Set a task or defect state to unblocked')
-  .action(function (task) { new CLI().unblock(task) });
+  .action(function (item) { new CLI().unblock(item) });
 
 program
   .command('current')
