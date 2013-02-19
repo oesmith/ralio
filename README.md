@@ -54,19 +54,22 @@ See the built-in help:
         
         open <item>
         Open a story, defect or task in a web browser
-
         
         start <task>
-        Set a task state to in-progress and assign it to you
+        Set a task or defect state to in-progress and assign it to you
         
         finish <task>
-        Set a task state to completed and assign it to you
+        Set a task or defect state to completed and assign it to you
         
         abandon <task>
-        Set a task state to defined and clear the owner
+        Set a task or defect state to defined and clear the owner
         
         block <task>
-        Set a task state to blocked
+        Set a task or defect state to blocked
+        
+        unblock <task>
+        Set a task or defect state to unblocked
+
         
         unblock <task>
         Set a task state to unblocked
