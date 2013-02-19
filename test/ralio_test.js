@@ -250,6 +250,12 @@ describe('Ralio', function () {
   });
 
   describe('#story', function () {
+    it('should return a error message when anything different of US or DE were passed', function(){
+       this.ralio.story('XD321', function (error, story) {
+          assert.equal(error, "Ralio's can only show detailed information of a defect(DE), story(US) or tasks(TA).");
+       });
+    });
+
     it('should fetch the defect with the given ID', function (done) {
       var ex = sinon.mock(this.ralio).expects('bulk').once()
         .withArgs({ defect: {
