@@ -43,54 +43,55 @@ See the built-in help:
 
       Commands:
 
-          backlog [options] 
-          Show the product backlog
-          
-          sprint [options] 
-          Show the current team iteration
-          
-          show <story>
-          Show tasks for an individual story
-          
-          open <story>
-          Open a story in a web browser
-          
-          start <task>
-          Set a task state to in-progress and assign it to you
-          
-          finish <task>
-          Set a task state to completed and assign it to you
-          
-          abandon <task>
-          Set a task state to defined and clear the owner
-          
-          block <task>
-          Set a task state to blocked
-          
-          unblock <task>
-          Set a task state to unblocked
-          
-          current 
-          Show your current tasks and stories
-          
-          point <story> <points>
-          Set the points for a story
-          
-          task [options] <option> <target>
-          Allow you to create and delete story tasks.
-          Available options <option> [create|delete].
-          In case of <option> create, <target> is the story name.
-          In case of <option> delete, <target> is the task itself.
+        backlog [options] 
+        Show the product backlog
+        
+        sprint [options] 
+        Show the current team iteration
+        
+        show <item>
+        Show related information for an individual story, defect or task
+        
+        open <item>
+        Open a story, defect or task in a web browser
 
-        Options:
+        
+        start <task>
+        Set a task state to in-progress and assign it to you
+        
+        finish <task>
+        Set a task state to completed and assign it to you
+        
+        abandon <task>
+        Set a task state to defined and clear the owner
+        
+        block <task>
+        Set a task state to blocked
+        
+        unblock <task>
+        Set a task state to unblocked
+        
+        current 
+        Show your current tasks and stories
+        
+        point <story> <points>
+        Set the points for a story
+        
+        task [options] <option> <target>
+        Allow you to create and delete story tasks.
+        Available options <option> [create|delete].
+        In case of <option> create, <target> is the story name.
+        In case of <option> delete, <target> is the task itself.
 
-          -h, --help     output usage information
-          -V, --version  output the version number
+      Options:
 
-        Usage examples of the task command to create and delete story tasks:
+        -h, --help     output usage information
+        -V, --version  output the version number
 
-          $ ralio task create US1234 -n "name of the task"
-          $ ralio task delete TA54322
+      Usage examples of the task command to create and delete story tasks:
+
+        $ ralio task create US1234 -n "name of the task"
+        $ ralio task delete TA54322
 
 ## Contributing
 
