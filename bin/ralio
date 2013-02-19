@@ -22,14 +22,14 @@ program
   .action(function (opts) { new CLI().sprint(opts) });
 
 program
-  .command('show <story>')
-  .description('Show tasks for an individual story')
-  .action(function (story) { new CLI().show(story) });
+  .command('show <item>')
+  .description('Show related information for an individual story, defect or task')
+  .action(function (item) { new CLI().show(story) });
 
 program
-  .command('open <story>')
-  .description('Open a story in a web browser')
-  .action(function (story) { new CLI().open(story) });
+  .command('open <item>')
+  .description('Open a story, defect or task in a web browser')
+  .action(function (item) { new CLI().open(story) });
 
 program
   .command('start <task>')
