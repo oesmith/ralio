@@ -63,7 +63,7 @@ program
 
 program
   .command('point <story> <points>')
-  .description('Set the points for a story')
+  .description('Set the points for a story or defect')
   .action(function (story, points) { new CLI().point(story, parseInt(points, 10)) });
 
 program

@@ -69,7 +69,6 @@ See the built-in help:
         
         unblock <task>
         Set a task or defect state to unblocked
-
         
         unblock <task>
         Set a task state to unblocked
@@ -78,7 +77,7 @@ See the built-in help:
         Show your current tasks and stories
         
         point <story> <points>
-        Set the points for a story
+        Set the points for a story or defect
         
         task [options] <option> <target>
         Allow you to create and delete story tasks.
