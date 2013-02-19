@@ -93,8 +93,10 @@ See the built-in help:
         $ ralio task create US1234 -n "name of the task"
         $ ralio task delete TA54322
 
-## Contributing
-
+## Contributors
+  * [Igor Escobar](http://github.com/igorescobar)
+  * [Tom Garbutt](http://github.com/tommg)
+  
 Contributions very welcome! Please write tests for any new features - use [mocha](http://visionmedia.github.com/mocha/) to run the test suite.
 
 ## License
