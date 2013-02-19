@@ -326,8 +326,8 @@ describe('Ralio', function () {
       it('should update the owner ID if the flag is set', function (done) {
         var ralio_mock = sinon.mock(this.ralio);
         var bulk1 = ralio_mock.expects('bulk').withArgs({
-          user: {},
-          task: {query: '(FormattedID = "TA00001")'}
+          task: {fetch: true, query: '(FormattedID = "TA00001")'},
+          user: {}
         });
 
         var update = ralio_mock.expects('update').withArgs('https://example.com/task', {
@@ -339,7 +339,8 @@ describe('Ralio', function () {
           });
 
         var bulk2 = ralio_mock.expects('bulk').withArgs({
-          task: {fetch: true, query: '(FormattedID = "TA00001")'}
+          task: {fetch: true, query: '(FormattedID = "TA00001")'},
+          user: {}
         });
 
         this.ralio.setTaskState('TA00001', {state: 'In-Progress', own: true}, function (error, task) {
@@ -360,7 +361,7 @@ describe('Ralio', function () {
         var ralio_mock = sinon.mock(this.ralio);
         var bulk1 = ralio_mock.expects('bulk').withArgs({
           user: {},
-          task: {query: '(FormattedID = "TA00001")'}
+          task: {fetch: true, query: '(FormattedID = "TA00001")'}
         });
 
         var update = ralio_mock.expects('update').withArgs('https://example.com/task', {
@@ -372,7 +373,8 @@ describe('Ralio', function () {
           });
 
         var bulk2 = ralio_mock.expects('bulk').withArgs({
-          task: {fetch: true, query: '(FormattedID = "TA00001")'}
+          task: {fetch: true, query: '(FormattedID = "TA00001")'},
+          user: {}
         });
 
         this.ralio.setTaskState('TA00001', {state: 'In-Progress'}, function (error, task) {
@@ -393,7 +395,7 @@ describe('Ralio', function () {
         var ralio_mock = sinon.mock(this.ralio);
         var bulk1 = ralio_mock.expects('bulk').withArgs({
           user: {},
-          task: {query: '(FormattedID = "TA00001")'}
+          task: {fetch: true, query: '(FormattedID = "TA00001")'}
         });
 
         var update = ralio_mock.expects('update').withArgs('https://example.com/task', {
@@ -406,7 +408,8 @@ describe('Ralio', function () {
           });
 
         var bulk2 = ralio_mock.expects('bulk').withArgs({
-          task: {fetch: true, query: '(FormattedID = "TA00001")'}
+          task: {fetch: true, query: '(FormattedID = "TA00001")'},
+          user: {}
         });
 
         this.ralio.setTaskState('TA00001', {state: 'Completed'}, function (error, task) {
