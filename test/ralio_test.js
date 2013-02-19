@@ -487,54 +487,57 @@ describe('Ralio', function () {
   });
 
   describe('#point', function () {
+    it('should return an error when anything different then US or DE', function(){
+      this.ralio.point('XD321', 5, function (error, story) {
+          assert.equal(error, "You can only point a Defect (DE) or a Story (US)");
+       });
+    });
+
     it('should update the given defect with the given points value', function (done) {
       var ralio_mock = sinon.mock(this.ralio);
       var bulk1 = ralio_mock.expects('bulk').withArgs({
-        defect: {query: '(FormattedID = "US0001")'},
-        hierarchicalrequirement: {query: '(FormattedID = "US0001")'}
+        defect: {fetch: true, query: '(FormattedID = "DE0001")'}, user: {}
       });
 
-      var update = ralio_mock.expects('update').withArgs('https://example.com/story', {
-          Defect: {
-            PlanEstimate: 5,
-            _ref: 'https://example.com/story'
-          }
-        });
+      var update = ralio_mock.expects('update').withArgs('https://example.com/defect', {
+        Defect: {
+          PlanEstimate: 5,
+          _ref: 'https://example.com/defect'
+        }
+      });
 
       var bulk2 = ralio_mock.expects('bulk').withArgs({
-        defect: {fetch: true, query: '(FormattedID = "US0001")'}
+        defect: {fetch: true, query: '(FormattedID = "DE0001")'}, user: {}
       });
 
-      this.ralio.point('US0001', 5, function (error, story) {
+      this.ralio.point('DE0001', 5, function (error, story) {
         assert.equal(error, null);
-        assert.deepEqual(story, { 'FormattedID': 'US0001' });
+        assert.deepEqual(story, { 'FormattedID': 'DE0001' });
         done();
       });
 
       bulk1.yield(null, {
-        defect: { Results: [{ _ref: 'https://example.com/story' }] },
-        hierarchicalrequirement: { Results: [] }
+        defect: { Results: [{ _ref: 'https://example.com/defect' }]}
       });
       update.yield(null);
-      bulk2.yield(null, { defect: { Results: [{ 'FormattedID': 'US0001' }] } });
+      bulk2.yield(null, { defect: { Results: [{ 'FormattedID': 'DE0001' }] } });
     });
 
     it('should update the given story with the given points value', function (done) {
       var ralio_mock = sinon.mock(this.ralio);
       var bulk1 = ralio_mock.expects('bulk').withArgs({
-        defect: {query: '(FormattedID = "US0001")'},
-        hierarchicalrequirement: {query: '(FormattedID = "US0001")'}
+        hierarchicalrequirement: {fetch: true, query: '(FormattedID = "US0001")'}, user: {}
       });
 
       var update = ralio_mock.expects('update').withArgs('https://example.com/story', {
-          HierarchicalRequirement: {
-            PlanEstimate: 5,
-            _ref: 'https://example.com/story'
-          }
-        });
+        HierarchicalRequirement: {
+          PlanEstimate: 5,
+          _ref: 'https://example.com/story'
+        }
+      });
 
       var bulk2 = ralio_mock.expects('bulk').withArgs({
-        hierarchicalrequirement: {fetch: true, query: '(FormattedID = "US0001")'}
+        hierarchicalrequirement: {fetch: true, query: '(FormattedID = "US0001")'}, user: {}
       });
 
       this.ralio.point('US0001', 5, function (error, story) {
@@ -544,8 +547,7 @@ describe('Ralio', function () {
       });
 
       bulk1.yield(null, {
-        hierarchicalrequirement: { Results: [{ _ref: 'https://example.com/story' }] },
-        defect: { Results: [] }
+        hierarchicalrequirement: { Results: [{ _ref: 'https://example.com/story' }]}
       });
       update.yield(null);
       bulk2.yield(null, { hierarchicalrequirement: { Results: [{ 'FormattedID': 'US0001' }] } });
