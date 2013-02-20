@@ -652,6 +652,7 @@ describe('#task', function() {
               Name: "my task name",
               Project: "https://example.com/project",
               WorkProduct: "https://example.com/story",
+              ToDo: 1.0,
               Tags: []
             }
           },
@@ -688,6 +689,7 @@ describe('#task', function() {
               Name: "my task name",
               Project: "https://example.com/project",
               WorkProduct: "https://example.com/story",
+              ToDo: 1.0,
               Tags: [{'_ref':'https://example.com/tag/12312312.js'}]
             }
           },
