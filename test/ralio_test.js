@@ -334,6 +334,7 @@ describe('Ralio', function () {
             Task: {
               Owner: 'https://example.com/user',
               State: 'In-Progress',
+              ToDo: 1.0,
               _ref: 'https://example.com/task'
             }
           });
@@ -368,6 +369,7 @@ describe('Ralio', function () {
             Task: {
               Owner: null,
               State: 'In-Progress',
+              ToDo: 1.0,
               _ref: 'https://example.com/task'
             }
           });

@@ -33,29 +33,29 @@ program
 
 program
   .command('start <item>')
-  .description('Set a task or defect state to in-progress and assign it to you')
+  .description('Set a task, defect or story state to in-progress and assign it to you')
   .action(function (item) { new CLI().start(item) });
 
 program
   .command('finish <item>')
   .option('-c, --rootcause [rootcause]', 'Set defect\'s root cause.')
   .option('-r, --resolution [resolution]', 'Set defect\'s resolution.')
-  .description('Set a task or defect state to completed and assign it to you')
+  .description('Set a task, defect or story state to completed and assign it to you')
   .action(function (item, opts) { new CLI().finish(item, opts) });
 
 program
   .command('abandon <item>')
-  .description('Set a task or defect state to defined and clear the owner')
+  .description('Set a task, defect or story state to defined and clear the owner')
   .action(function (item) { new CLI().abandon(item) });
 
 program
   .command('block <item>')
-  .description('Set a task or defect state to blocked')
+  .description('Set a task, defect or story state to blocked')
   .action(function (item) { new CLI().block(item) });
 
 program
   .command('unblock <item>')
-  .description('Set a task or defect state to unblocked')
+  .description('Set a task, defect or story state to unblocked')
   .action(function (item) { new CLI().unblock(item) });
 
 program
