@@ -3,7 +3,7 @@
 var program = require('commander'),
     CLI = require('../lib/cli');
 
-program.version('0.2.3');
+program.version('0.2.4');
 
 program
   .command('backlog')
