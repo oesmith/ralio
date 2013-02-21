@@ -319,6 +319,30 @@ describe('Ralio', function () {
         }
       });
     });
+
+    it('should fetch the user task with the given ID', function (done) {
+      var ex = sinon.mock(this.ralio).expects('bulk').once()
+        .withArgs({ task: {
+          fetch: 'Name,FormattedID,PlanEstimate,ScheduleState,Tasks,State,Owner,TaskIndex,Blocked,Project,ObjectID,Description',
+          query: '(FormattedID = "TA4321")'
+        }});
+
+      this.ralio.story('TA4321', function (error, story) {
+        assert.equal(error, null);
+        assert.deepEqual(story, {
+          FormattedID: 'TA4321', Name: 'Test Task', Tasks: []
+        });
+        done();
+      });
+
+      ex.yield(null, {
+        task: {
+          Results: [
+            { FormattedID: 'TA4321', Name: 'Test Task', Tasks: []}
+          ]
+        }
+      });
+    });
   });
 
   describe('#setTaskState', function () {
@@ -354,6 +378,7 @@ describe('Ralio', function () {
           user: { _ref: 'https://example.com/user' },
           task: { Results: [{ _ref: 'https://example.com/task' }] }
         });
+
         update.yield(null);
         bulk2.yield(null, { task: { Results: [{ 'FormattedID': 'TA00001' }] } });
       });
@@ -427,9 +452,445 @@ describe('Ralio', function () {
         update.yield(null);
         bulk2.yield(null, { task: { Results: [{ 'FormattedID': 'TA00001' }] } });
       });
+
+      it('should set the ToDo time to zero when the defect state is Fixed/Completed', function (done) {
+        var ralio_mock = sinon.mock(this.ralio);
+        var bulk1 = ralio_mock.expects('bulk').withArgs({
+          user: {},
+          defect: {fetch: true, query: '(FormattedID = "DE00001")'}
+        });
+
+        var update = ralio_mock.expects('update').withArgs('https://example.com/defect', {
+            Defect: {
+              Owner: null,
+              State: 'Fixed',
+              ToDo: 0.0,
+              _ref: 'https://example.com/defect'
+            }
+          });
+
+        var bulk2 = ralio_mock.expects('bulk').withArgs({
+          defect: {fetch: true, query: '(FormattedID = "DE00001")'},
+          user: {}
+        });
+
+        this.ralio.setTaskState('DE00001', {state: 'Completed'}, function (error, defect) {
+          assert.equal(error, null);
+          assert.deepEqual(defect, { 'FormattedID': 'DE00001' });
+          done();
+        });
+
+        bulk1.yield(null, {
+          user: { _ref: 'https://example.com/user' },
+          defect: { Results: [{ _ref: 'https://example.com/defect' }] }
+        });
+
+        update.yield(null);
+        bulk2.yield(null, { defect: { Results: [{ 'FormattedID': 'DE00001' }] } });
+      });
+
+      it('should set the ToDo time to zero when the story state is Completed', function (done) {
+        var ralio_mock = sinon.mock(this.ralio);
+        var bulk1 = ralio_mock.expects('bulk').withArgs({
+          user: {},
+          hierarchicalrequirement: {fetch: true, query: '(FormattedID = "US0001")'}
+        });
+
+        var update = ralio_mock.expects('update').withArgs('https://example.com/story', {
+            HierarchicalRequirement: {
+              Owner: null,
+              ScheduleState: 'Completed',
+              ToDo: 0.0,
+              _ref: 'https://example.com/story'
+            }
+          });
+
+        var bulk2 = ralio_mock.expects('bulk').withArgs({
+          hierarchicalrequirement: {fetch: true, query: '(FormattedID = "US0001")'},
+          user: {}
+        });
+
+        this.ralio.setTaskState('US0001', {state: 'Completed'}, function (error, story) {
+          assert.equal(error, null);
+          assert.deepEqual(story, { 'FormattedID': 'US0001' });
+          done();
+        });
+
+        bulk1.yield(null, {
+          user: { _ref: 'https://example.com/user' },
+          hierarchicalrequirement: { Results: [{ _ref: 'https://example.com/story' }] }
+        });
+
+        update.yield(null);
+        bulk2.yield(null, { hierarchicalrequirement: { Results: [{ 'FormattedID': 'US0001' }] } });
+      });
+      
+      it('should set the ToDo time to 1 when the story state is In-Progress', function (done) {
+        var ralio_mock = sinon.mock(this.ralio);
+        var bulk1 = ralio_mock.expects('bulk').withArgs({
+          user: {},
+          hierarchicalrequirement: {fetch: true, query: '(FormattedID = "US0001")'}
+        });
+
+        var update = ralio_mock.expects('update').withArgs('https://example.com/story', {
+            HierarchicalRequirement: {
+              Owner: null,
+              ScheduleState: 'In-Progress',
+              ToDo: 1.0,
+              _ref: 'https://example.com/story'
+            }
+          });
+
+        var bulk2 = ralio_mock.expects('bulk').withArgs({
+          hierarchicalrequirement: {fetch: true, query: '(FormattedID = "US0001")'},
+          user: {}
+        });
+
+        this.ralio.setTaskState('US0001', {state: 'In-Progress'}, function (error, story) {
+          assert.equal(error, null);
+          assert.deepEqual(story, { 'FormattedID': 'US0001' });
+          done();
+        });
+
+        bulk1.yield(null, {
+          user: { _ref: 'https://example.com/user' },
+          hierarchicalrequirement: { Results: [{ _ref: 'https://example.com/story' }] }
+        });
+
+        update.yield(null);
+        bulk2.yield(null, { hierarchicalrequirement: { Results: [{ 'FormattedID': 'US0001' }] } });
+      });
+      
+      it('should set the ToDo time to 1 when the defect state is Open/Defined', function (done) {
+        var ralio_mock = sinon.mock(this.ralio);
+        var bulk1 = ralio_mock.expects('bulk').withArgs({
+          user: {},
+          defect: {fetch: true, query: '(FormattedID = "DE00001")'}
+        });
+
+        var update = ralio_mock.expects('update').withArgs('https://example.com/defect', {
+            Defect: {
+              Owner: null,
+              State: 'Open',
+              ToDo: 1.0,
+              _ref: 'https://example.com/defect'
+            }
+          });
+
+        var bulk2 = ralio_mock.expects('bulk').withArgs({
+          defect: {fetch: true, query: '(FormattedID = "DE00001")'},
+          user: {}
+        });
+
+        this.ralio.setTaskState('DE00001', {state: 'In-Progress'}, function (error, defect) {
+          assert.equal(error, null);
+          assert.deepEqual(defect, { 'FormattedID': 'DE00001' });
+          done();
+        });
+
+        bulk1.yield(null, {
+          user: { _ref: 'https://example.com/user' },
+          defect: { Results: [{ _ref: 'https://example.com/defect' }] }
+        });
+
+        update.yield(null);
+        bulk2.yield(null, { defect: { Results: [{ 'FormattedID': 'DE00001' }] } });
+      });
+      
+      it('should set the ToDo time to 1 when the task state is Completed', function (done) {
+        var ralio_mock = sinon.mock(this.ralio);
+        var bulk1 = ralio_mock.expects('bulk').withArgs({
+          user: {},
+          task: {fetch: true, query: '(FormattedID = "TA00001")'}
+        });
+
+        var update = ralio_mock.expects('update').withArgs('https://example.com/task', {
+            Task: {
+              Owner: null,
+              State: 'In-Progress',
+              ToDo: 1.0,
+              _ref: 'https://example.com/task'
+            }
+          });
+
+        var bulk2 = ralio_mock.expects('bulk').withArgs({
+          task: {fetch: true, query: '(FormattedID = "TA00001")'},
+          user: {}
+        });
+
+        this.ralio.setTaskState('TA00001', {state: 'In-Progress'}, function (error, task) {
+          assert.equal(error, null);
+          assert.deepEqual(task, { 'FormattedID': 'TA00001' });
+          done();
+        });
+
+        bulk1.yield(null, {
+          user: { _ref: 'https://example.com/user' },
+          task: { Results: [{ _ref: 'https://example.com/task' }] }
+        });
+        update.yield(null);
+        bulk2.yield(null, { task: { Results: [{ 'FormattedID': 'TA00001' }] } });
+      });
+
     });
-    it('should block the task when the blocked flag is set to true');
-    it('should unblock the task when the blocked flag is set to true');
+      
+    it('should block story when block param is true', function (done) {
+      var ralio_mock = sinon.mock(this.ralio);
+      var bulk1 = ralio_mock.expects('bulk').withArgs({
+        user: {},
+        hierarchicalrequirement: {fetch: true, query: '(FormattedID = "US0001")'}
+      });
+
+      var update = ralio_mock.expects('update').withArgs('https://example.com/story', {
+          HierarchicalRequirement: {
+            Owner: null,
+            ScheduleState: 'In-Progress',
+            ToDo: 1.0,
+            Blocked: true,
+            _ref: 'https://example.com/story'
+          }
+        });
+
+      var bulk2 = ralio_mock.expects('bulk').withArgs({
+        hierarchicalrequirement: {fetch: true, query: '(FormattedID = "US0001")'},
+        user: {}
+      });
+
+      this.ralio.setTaskState('US0001', {state: 'In-Progress', blocked: true}, function (error, story) {
+        assert.equal(error, null);
+        assert.deepEqual(story, { 'FormattedID': 'US0001' });
+        done();
+      });
+
+      bulk1.yield(null, {
+        user: { _ref: 'https://example.com/user' },
+        hierarchicalrequirement: { Results: [{ _ref: 'https://example.com/story' }] }
+      });
+
+      update.yield(null);
+      bulk2.yield(null, { hierarchicalrequirement: { Results: [{ 'FormattedID': 'US0001' }] } });
+    });
+    
+    it('should block defect when block param is true', function (done) {
+      var ralio_mock = sinon.mock(this.ralio);
+      var bulk1 = ralio_mock.expects('bulk').withArgs({
+        user: {},
+        defect: {fetch: true, query: '(FormattedID = "DE00001")'}
+      });
+
+      var update = ralio_mock.expects('update').withArgs('https://example.com/defect', {
+          Defect: {
+            Owner: null,
+            State: 'Open',
+            ToDo: 1.0,
+            Blocked: true,
+            _ref: 'https://example.com/defect'
+          }
+        });
+
+      var bulk2 = ralio_mock.expects('bulk').withArgs({
+        defect: {fetch: true, query: '(FormattedID = "DE00001")'},
+        user: {}
+      });
+
+      this.ralio.setTaskState('DE00001', {state: 'In-Progress', blocked: true}, function (error, defect) {
+        assert.equal(error, null);
+        assert.deepEqual(defect, { 'FormattedID': 'DE00001' });
+        done();
+      });
+
+      bulk1.yield(null, {
+        user: { _ref: 'https://example.com/user' },
+        defect: { Results: [{ _ref: 'https://example.com/defect' }] }
+      });
+
+      update.yield(null);
+      bulk2.yield(null, { defect: { Results: [{ 'FormattedID': 'DE00001' }] } });
+    });
+    
+    it('should block task when block param is true', function (done) {
+      var ralio_mock = sinon.mock(this.ralio);
+      var bulk1 = ralio_mock.expects('bulk').withArgs({
+        user: {},
+        task: {fetch: true, query: '(FormattedID = "TA00001")'}
+      });
+
+      var update = ralio_mock.expects('update').withArgs('https://example.com/task', {
+          Task: {
+            Owner: null,
+            State: 'In-Progress',
+            ToDo: 1.0,
+            Blocked: true,
+            _ref: 'https://example.com/task'
+          }
+        });
+
+      var bulk2 = ralio_mock.expects('bulk').withArgs({
+        task: {fetch: true, query: '(FormattedID = "TA00001")'},
+        user: {}
+      });
+
+      this.ralio.setTaskState('TA00001', {state: 'In-Progress', blocked: true}, function (error, task) {
+        assert.equal(error, null);
+        assert.deepEqual(task, { 'FormattedID': 'TA00001' });
+        done();
+      });
+
+      bulk1.yield(null, {
+        user: { _ref: 'https://example.com/user' },
+        task: { Results: [{ _ref: 'https://example.com/task' }] }
+      });
+      update.yield(null);
+      bulk2.yield(null, { task: { Results: [{ 'FormattedID': 'TA00001' }] } });
+    });
+
+    it('should unblock story when block param is false', function (done) {
+      var ralio_mock = sinon.mock(this.ralio);
+      var bulk1 = ralio_mock.expects('bulk').withArgs({
+        user: {},
+        hierarchicalrequirement: {fetch: true, query: '(FormattedID = "US0001")'}
+      });
+
+      var update = ralio_mock.expects('update').withArgs('https://example.com/story', {
+          HierarchicalRequirement: {
+            Owner: null,
+            ScheduleState: 'In-Progress',
+            ToDo: 1.0,
+            Blocked: false,
+            _ref: 'https://example.com/story'
+          }
+        });
+
+      var bulk2 = ralio_mock.expects('bulk').withArgs({
+        hierarchicalrequirement: {fetch: true, query: '(FormattedID = "US0001")'},
+        user: {}
+      });
+
+      this.ralio.setTaskState('US0001', {state: 'In-Progress', blocked: false}, function (error, story) {
+        assert.equal(error, null);
+        assert.deepEqual(story, { 'FormattedID': 'US0001' });
+        done();
+      });
+
+      bulk1.yield(null, {
+        user: { _ref: 'https://example.com/user' },
+        hierarchicalrequirement: { Results: [{ _ref: 'https://example.com/story' }] }
+      });
+
+      update.yield(null);
+      bulk2.yield(null, { hierarchicalrequirement: { Results: [{ 'FormattedID': 'US0001' }] } });
+    });
+    
+    it('should unblock defect when block param is false', function (done) {
+      var ralio_mock = sinon.mock(this.ralio);
+      var bulk1 = ralio_mock.expects('bulk').withArgs({
+        user: {},
+        defect: {fetch: true, query: '(FormattedID = "DE00001")'}
+      });
+
+      var update = ralio_mock.expects('update').withArgs('https://example.com/defect', {
+          Defect: {
+            Owner: null,
+            State: 'Open',
+            ToDo: 1.0,
+            Blocked: false,
+            _ref: 'https://example.com/defect'
+          }
+        });
+
+      var bulk2 = ralio_mock.expects('bulk').withArgs({
+        defect: {fetch: true, query: '(FormattedID = "DE00001")'},
+        user: {}
+      });
+
+      this.ralio.setTaskState('DE00001', {state: 'In-Progress', blocked: false}, function (error, defect) {
+        assert.equal(error, null);
+        assert.deepEqual(defect, { 'FormattedID': 'DE00001' });
+        done();
+      });
+
+      bulk1.yield(null, {
+        user: { _ref: 'https://example.com/user' },
+        defect: { Results: [{ _ref: 'https://example.com/defect' }] }
+      });
+
+      update.yield(null);
+      bulk2.yield(null, { defect: { Results: [{ 'FormattedID': 'DE00001' }] } });
+    });
+    
+    it('should unblock task when block param is false', function (done) {
+      var ralio_mock = sinon.mock(this.ralio);
+      var bulk1 = ralio_mock.expects('bulk').withArgs({
+        user: {},
+        task: {fetch: true, query: '(FormattedID = "TA00001")'}
+      });
+
+      var update = ralio_mock.expects('update').withArgs('https://example.com/task', {
+          Task: {
+            Owner: null,
+            State: 'In-Progress',
+            ToDo: 1.0,
+            Blocked: false,
+            _ref: 'https://example.com/task'
+          }
+        });
+
+      var bulk2 = ralio_mock.expects('bulk').withArgs({
+        task: {fetch: true, query: '(FormattedID = "TA00001")'},
+        user: {}
+      });
+
+      this.ralio.setTaskState('TA00001', {state: 'In-Progress', blocked: false}, function (error, task) {
+        assert.equal(error, null);
+        assert.deepEqual(task, { 'FormattedID': 'TA00001' });
+        done();
+      });
+
+      bulk1.yield(null, {
+        user: { _ref: 'https://example.com/user' },
+        task: { Results: [{ _ref: 'https://example.com/task' }] }
+      });
+      update.yield(null);
+      bulk2.yield(null, { task: { Results: [{ 'FormattedID': 'TA00001' }] } });
+    });
+
+    it('should set root cause and resolution when is passed on a defect', function (done) {
+      var ralio_mock = sinon.mock(this.ralio);
+      var bulk1 = ralio_mock.expects('bulk').withArgs({
+        user: {},
+        defect: {fetch: true, query: '(FormattedID = "DE00001")'}
+      });
+
+      var update = ralio_mock.expects('update').withArgs('https://example.com/defect', {
+          Defect: {
+            Owner: null,
+            State: 'Open',
+            ToDo: 1.0,
+            RootCause: "Code Design/Error",
+            Resolution: "Code Change",
+            _ref: 'https://example.com/defect'
+          }
+        });
+
+      var bulk2 = ralio_mock.expects('bulk').withArgs({
+        defect: {fetch: true, query: '(FormattedID = "DE00001")'},
+        user: {}
+      });
+
+      this.ralio.setTaskState('DE00001', {state: 'In-Progress', rootcause: "Code Design/Error", resolution: "Code Change"}, function (error, defect) {
+        assert.equal(error, null);
+        assert.deepEqual(defect, { 'FormattedID': 'DE00001' });
+        done();
+      });
+
+      bulk1.yield(null, {
+        user: { _ref: 'https://example.com/user' },
+        defect: { Results: [{ _ref: 'https://example.com/defect' }] }
+      });
+
+      update.yield(null);
+      bulk2.yield(null, { defect: { Results: [{ 'FormattedID': 'DE00001' }] } });
+    });
   });
 
   describe('#current', function () {
