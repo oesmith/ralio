@@ -81,11 +81,38 @@ program
 
 
 program.on('--help', function(){
-  console.log('  Usage examples of the task command to create and delete story tasks:');
+  console.log('  Usage Examples');
+  console.log('');
+  console.log('');
+  console.log('  Creating and deleting story tasks:');
   console.log('');
   console.log('    $ ralio task create US1234 -n "name of the task"');
-  console.log('    $ ralio task create US1234 -n "name of the task" -t BLUE_TASK');
+  console.log('    $ ralio task create US1234 -n "name of the task" -t "BLUE TASK"');
   console.log('    $ ralio task delete TA54322');
+  console.log('');
+
+  console.log('  Bug fixing:');
+  console.log('');
+  console.log('    $ ralio finish DE1234');
+  console.log('    $ ralio finish DE1234 --rootcause "Code Design/Error" --resolution "Code Change"');
+  console.log('');
+  console.log('  Finishin a task:');
+  console.log('');
+  console.log('    $ ralio finish TA1234');
+  console.log('');
+  console.log('  Punctuating a story or defect:');
+  console.log('');
+  console.log('    $ ralio point US1234');
+  console.log('    $ ralio point DE1234');
+  console.log('');
+  console.log('  Viewing your current sprint story and/or tasks:');
+  console.log('');
+  console.log('    $ ralio sprint');
+  console.log('    $ ralio sprint -t');
+  console.log('');
+  console.log('  Viewing current\'s sprint of another project:');
+  console.log('');
+  console.log('    $ ralio sprint -p "project_name"');
   console.log('');
 });
 
