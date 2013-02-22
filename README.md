@@ -87,10 +87,37 @@ See the built-in help:
         -h, --help     output usage information
         -V, --version  output the version number
 
-      Usage examples of the task command to create and delete story tasks:
+      Usage Examples
+
+
+      Creating and deleting story tasks:
 
         $ ralio task create US1234 -n "name of the task"
+        $ ralio task create US1234 -n "name of the task" -t "BLUE TASK"
         $ ralio task delete TA54322
+
+      Bug fixing:
+
+        $ ralio finish DE1234
+        $ ralio finish DE1234 --rootcause "Code Design/Error" --resolution "Code Change"
+
+      Finishin a task:
+
+        $ ralio finish TA1234
+
+      Punctuating a story or defect:
+
+        $ ralio point US1234
+        $ ralio point DE1234
+
+      Viewing your current sprint story and/or tasks:
+
+        $ ralio sprint
+        $ ralio sprint -t
+
+      Viewing current's sprint of another project:
+
+        $ ralio sprint -p "project_name"
 
 ## Contributors
   * [Igor Escobar](http://github.com/igorescobar)
