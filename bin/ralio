@@ -79,6 +79,37 @@ program
   .option('-p, --project [project]', 'Create/delete a task from a specific project [project]')
   .action(function (opts, option, target) { new CLI().task(opts, option, target) });
 
+program
+  .command('configure')
+  .description('Set your Rally configurations.')
+  .action(function (opts) { 
+
+    var ralio_configuration = {};
+    program.prompt('Type your Ralio\'s username: ', function(username){
+      ralio_configuration.username = username;
+      
+      program.password('Type your Ralio\'s password: ', '*', function(password){
+        ralio_configuration.password = password;
+
+         program.prompt('Type your Ralio\'s project: ', function(project){
+          ralio_configuration.project = project;
+
+          program.prompt('Type your Ralio\'s team: ', function(team){
+            ralio_configuration.team = team;
+
+            var fs = require('fs'),
+                path = require('path');
+
+            fs.writeFile(path.join(process.env.HOME, '.raliorc'), JSON.stringify(ralio_configuration), function(err) {
+              err ? console.log(err) : console.log("All set! :)".green);
+            }); 
+
+            process.stdin.destroy();
+          }); 
+        });
+      });
+    });
+  });
 
 program.on('--help', function(){
   console.log('  Usage Examples');
