@@ -9,20 +9,13 @@ A *usable* command-line client for rally.
 
     $ npm install -g ralio
 
-ralio also uses elinks to format HTML content - install it using homebrew.
+ralio also uses elinks to format HTML content - install it using homebrew or apt-get. 
 
 ## Configuration
 
-Create a config file in `~/.raliorc`.
+Run the command `ralio configure` and follow the steps.
 
-    {
-      "username": "USERNAME",
-      "password": "PASSWORD",
-      "project": "BACKLOG PROJECT NAME",
-      "team": "TEAM PROJECT NAME"
-    }
-
-`username` and `password` should be self-explanatory.  `project` and `team`
+`username` and `password` should be self-explanatory. `project` and `team`
 should contain the names of the Rally projects that correspond to your project
 backlog and your team.  Where I work, we run multiple teams from a common
 product backlog, hence the different options.  If you don't work that way,
@@ -30,7 +23,7 @@ put the same project name in both.
 
 Unfortunately, Rally doesn't use OAuth (or any other kind of API keys), so
 ralio needs your password.  I suggest you `chmod 0600 ~/.raliorc` to prevent
-your password going walkies.  In future I'll be stashing credentials in the OS
+your password going walkies. In future I'll be stashing credentials in the OS
 key store.
 
 ## Usage
