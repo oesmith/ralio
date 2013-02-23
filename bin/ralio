@@ -85,16 +85,16 @@ program
   .action(function (opts) { 
 
     var ralio_configuration = {};
-    program.prompt('Type your Ralio\'s username: ', function(username){
+    program.prompt('Type your Rally\'s username: ', function(username){
       ralio_configuration.username = username;
       
-      program.password('Type your Ralio\'s password: ', '*', function(password){
+      program.password('Type your Rally\'s password: ', '*', function(password){
         ralio_configuration.password = password;
 
-         program.prompt('Type your Ralio\'s project: ', function(project){
+         program.prompt('Type your Rally\'s project: ', function(project){
           ralio_configuration.project = project;
 
-          program.prompt('Type your Ralio\'s team: ', function(team){
+          program.prompt('Type your Rally\'s team: ', function(team){
             ralio_configuration.team = team;
 
             var fs = require('fs'),
