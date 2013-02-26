@@ -1,7 +1,7 @@
 {
   "name": "ralio",
   "description": "command-line client for the rallydev API",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": {
     "name": "Olly Smith",
     "email": "olly.smith@gmail.com",
