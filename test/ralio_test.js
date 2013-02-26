@@ -359,6 +359,7 @@ describe('Ralio', function () {
               Owner: 'https://example.com/user',
               State: 'In-Progress',
               ToDo: 1.0,
+              Estimate: 1.0,
               _ref: 'https://example.com/task'
             }
           });
@@ -395,6 +396,7 @@ describe('Ralio', function () {
               Owner: null,
               State: 'In-Progress',
               ToDo: 1.0,
+              Estimate: 1.0,
               _ref: 'https://example.com/task'
             }
           });
@@ -537,6 +539,7 @@ describe('Ralio', function () {
               Owner: null,
               ScheduleState: 'In-Progress',
               ToDo: 1.0,
+              Estimate: 1.0,
               _ref: 'https://example.com/story'
             }
           });
@@ -573,6 +576,7 @@ describe('Ralio', function () {
               Owner: null,
               State: 'Open',
               ToDo: 1.0,
+              Estimate: 1.0,
               _ref: 'https://example.com/defect'
             }
           });
@@ -609,6 +613,7 @@ describe('Ralio', function () {
               Owner: null,
               State: 'In-Progress',
               ToDo: 1.0,
+              Estimate: 1.0,
               _ref: 'https://example.com/task'
             }
           });
@@ -646,6 +651,7 @@ describe('Ralio', function () {
             Owner: null,
             ScheduleState: 'In-Progress',
             ToDo: 1.0,
+            Estimate: 1.0,
             Blocked: true,
             _ref: 'https://example.com/story'
           }
@@ -683,6 +689,7 @@ describe('Ralio', function () {
             Owner: null,
             State: 'Open',
             ToDo: 1.0,
+            Estimate: 1.0,
             Blocked: true,
             _ref: 'https://example.com/defect'
           }
@@ -720,6 +727,7 @@ describe('Ralio', function () {
             Owner: null,
             State: 'In-Progress',
             ToDo: 1.0,
+            Estimate: 1.0,
             Blocked: true,
             _ref: 'https://example.com/task'
           }
@@ -756,6 +764,7 @@ describe('Ralio', function () {
             Owner: null,
             ScheduleState: 'In-Progress',
             ToDo: 1.0,
+            Estimate: 1.0,
             Blocked: false,
             _ref: 'https://example.com/story'
           }
@@ -793,6 +802,7 @@ describe('Ralio', function () {
             Owner: null,
             State: 'Open',
             ToDo: 1.0,
+            Estimate: 1.0,
             Blocked: false,
             _ref: 'https://example.com/defect'
           }
@@ -830,6 +840,7 @@ describe('Ralio', function () {
             Owner: null,
             State: 'In-Progress',
             ToDo: 1.0,
+            Estimate: 1.0,
             Blocked: false,
             _ref: 'https://example.com/task'
           }
@@ -866,6 +877,7 @@ describe('Ralio', function () {
             Owner: null,
             State: 'Open',
             ToDo: 1.0,
+            Estimate: 1.0,
             RootCause: "Code Design/Error",
             Resolution: "Code Change",
             _ref: 'https://example.com/defect'
@@ -1116,6 +1128,7 @@ describe('#task', function() {
               Project: "https://example.com/project",
               WorkProduct: "https://example.com/story",
               ToDo: 1.0,
+              Estimate: 1.0,
               Tags: []
             }
           },
@@ -1153,6 +1166,7 @@ describe('#task', function() {
               Project: "https://example.com/project",
               WorkProduct: "https://example.com/story",
               ToDo: 1.0,
+              Estimate: 1.0,
               Tags: [{'_ref':'https://example.com/tag/12312312.js'}]
             }
           },
