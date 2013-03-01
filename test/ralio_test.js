@@ -259,7 +259,7 @@ describe('Ralio', function () {
     it('should fetch the defect with the given ID', function (done) {
       var ex = sinon.mock(this.ralio).expects('bulk').once()
         .withArgs({ defect: {
-          fetch: 'Name,FormattedID,PlanEstimate,ScheduleState,Tasks,Pair,State,Owner,TaskIndex,Blocked,Project,ObjectID,Description',
+          fetch: 'Name,FormattedID,PlanEstimate,ScheduleState,Tasks,Pair,Defects,State,Owner,TaskIndex,Blocked,Project,ObjectID,Description',
           query: '(FormattedID = "DE4321")'
         }});
 
@@ -291,7 +291,7 @@ describe('Ralio', function () {
     it('should fetch the user story with the given ID', function (done) {
       var ex = sinon.mock(this.ralio).expects('bulk').once()
         .withArgs({ hierarchicalrequirement: {
-          fetch: 'Name,FormattedID,PlanEstimate,ScheduleState,Tasks,Pair,State,Owner,TaskIndex,Blocked,Project,ObjectID,Description',
+          fetch: 'Name,FormattedID,PlanEstimate,ScheduleState,Tasks,Pair,Defects,State,Owner,TaskIndex,Blocked,Project,ObjectID,Description',
           query: '(FormattedID = "US4321")'
         }});
 
@@ -323,7 +323,7 @@ describe('Ralio', function () {
     it('should fetch the user task with the given ID', function (done) {
       var ex = sinon.mock(this.ralio).expects('bulk').once()
         .withArgs({ task: {
-          fetch: 'Name,FormattedID,PlanEstimate,ScheduleState,Tasks,Pair,State,Owner,TaskIndex,Blocked,Project,ObjectID,Description',
+          fetch: 'Name,FormattedID,PlanEstimate,ScheduleState,Tasks,Pair,Defects,State,Owner,TaskIndex,Blocked,Project,ObjectID,Description',
           query: '(FormattedID = "TA4321")'
         }});
 
