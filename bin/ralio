@@ -155,6 +155,9 @@ program.on('--help', function(){
   console.log('');
 });
 
+if(typeof program._events[process.argv[2]] === "undefined")
+  console.log('Command not found! Try running ralio --help'.red);
+
 program.parse(process.argv);
 
 /* vim:set filetype=javascript: */
