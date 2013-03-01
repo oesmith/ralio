@@ -908,7 +908,7 @@ describe('Ralio', function () {
   describe('#current', function () {
     it('should fetch all the stories that the current user is working on', function (done) {
       var query = {
-        fetch: 'Name,FormattedID,Rank,PlanEstimate,ScheduleState,Tasks,State,Owner,TaskIndex,Blocked',
+        fetch: 'Name,FormattedID,Rank,PlanEstimate,ScheduleState,Tasks,Pair,State,Owner,TaskIndex,Blocked',
         order: 'Rank',
         query: '((Project.Name = "project3") AND ((Iteration.StartDate <= "1970-01-01") AND (Iteration.EndDate >= "1970-01-01")))',
         pagesize: 100
