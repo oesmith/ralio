@@ -147,6 +147,12 @@ program.on('--help', function(){
   console.log('');
   console.log('    $ ralio sprint -p "project_name"');
   console.log('');
+  console.log('  Pair programming');
+  console.log('');
+  console.log('    $ ralio start TA1234 --pair "Mark"');
+  console.log('    $ ralio finish TA1234 --pair "Mark"');
+  console.log('    $ ralio finish DE1234 --rootcause "Code Design/Error" --resolution "Code Change" --pair "Mark"');
+  console.log('');
 });
 
 program.parse(process.argv);

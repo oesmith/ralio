@@ -93,6 +93,7 @@ See the built-in help:
 
         $ ralio finish DE1234
         $ ralio finish DE1234 --rootcause "Code Design/Error" --resolution "Code Change"
+        $ ralio finish DE1234 --rootcause "Code Design/Error" --resolution "Code Change"
 
       Finishin a task:
 
@@ -111,6 +112,11 @@ See the built-in help:
       Viewing current's sprint of another project:
 
         $ ralio sprint -p "project_name"
+
+      Pair programming:
+
+        $ ralio start TA1234 --pair "Mark"
+        $ ralio finish TA1234 --pair "Mark"
 
 ## Contributors
   * [Igor Escobar](http://github.com/igorescobar)
