@@ -2,8 +2,8 @@
 
 var program = require('commander'),
     CLI = require('../lib/cli');
-
-program.version('0.3.6');
+var package = require('../package.json');
+program.version(package.version);
 
 program
   .command('backlog')
@@ -155,7 +155,7 @@ program.on('--help', function(){
   console.log('');
 });
 
-if(typeof program._events[process.argv[2]] === "undefined" && process.argv[2] !== "-v" && process.argv[2] !== "--version")
+if(typeof program._events[process.argv[2]] === "undefined" && process.argv[2] !== "-V" && process.argv[2] !== "--version")
   console.log('Command not found! Try running ralio --help'.red);
 
 program.parse(process.argv);
