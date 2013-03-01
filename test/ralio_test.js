@@ -192,7 +192,7 @@ describe('Ralio', function () {
   describe('#sprint', function () {
     it('should fetch the sprint stories for a given project', function (done) {
       var query = {
-        fetch: 'Name,FormattedID,Rank,PlanEstimate,ScheduleState,Tasks,State,Owner,TaskIndex,Blocked',
+        fetch: 'Name,FormattedID,Rank,PlanEstimate,ScheduleState,Tasks,Pair,State,Owner,TaskIndex,Blocked',
         order: 'Rank',
         query: '((Project.Name = "project2") AND ((Iteration.StartDate <= "1970-01-01") AND (Iteration.EndDate >= "1970-01-01")))',
         pagesize: 100

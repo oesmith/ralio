@@ -33,13 +33,15 @@ program
 
 program
   .command('start <item>')
+  .option('-p, --pair [pair]', 'How\'s pair [pair] programming with you')
   .description('Set a task, defect or story state to in-progress and assign it to you')
-  .action(function (item) { new CLI().start(item) });
+  .action(function (item, opts) { new CLI().start(item, opts) });
 
 program
   .command('finish <item>')
   .option('-c, --rootcause [rootcause]', 'Set defect\'s root cause.')
   .option('-r, --resolution [resolution]', 'Set defect\'s resolution.')
+  .option('-p, --pair [pair]', 'How\'s pair [pair] programming with you')
   .description('Set a task, defect or story state to completed and assign it to you')
   .action(function (item, opts) { new CLI().finish(item, opts) });
 
