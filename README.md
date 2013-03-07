@@ -93,9 +93,8 @@ See the built-in help:
 
         $ ralio finish DE1234
         $ ralio finish DE1234 --rootcause "Code Design/Error" --resolution "Code Change"
-        $ ralio finish DE1234 --rootcause "Code Design/Error" --resolution "Code Change"
 
-      Finishin a task:
+      Finishing a task:
 
         $ ralio finish TA1234
 
@@ -108,6 +107,10 @@ See the built-in help:
 
         $ ralio sprint
         $ ralio sprint -t
+
+      Viewing your current sprint story and/or tasks with filter by story's name:
+
+        $ ralio sprint -t -f "some name"
 
       Viewing current's sprint of another project:
 

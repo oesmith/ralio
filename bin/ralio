@@ -17,6 +17,7 @@ program
   .command('sprint')
   .description('Show the current team iteration')
   .option('-t, --tasks', 'Show story tasks')
+  .option('-f, --find [term]', 'Find stories that matches with the term [term]')
   .option('-a, --accepted', 'Show accepted stories')
   .option('-p, --project [project]', 'Show sprint stories for project [project]')
   .action(function (opts) { new CLI().sprint(opts) });
@@ -142,6 +143,10 @@ program.on('--help', function(){
   console.log('');
   console.log('    $ ralio sprint');
   console.log('    $ ralio sprint -t');
+  console.log('');
+  console.log('  Viewing your current sprint story and/or tasks with filter by story\'s name:');
+  console.log('');
+  console.log('    $ ralio sprint -t -f "some name"');
   console.log('');
   console.log('  Viewing current\'s sprint of another project:');
   console.log('');
