@@ -190,6 +190,63 @@ describe('Ralio', function () {
   });
 
   describe('#sprint', function () {
+    it('should fetch the sprint stories for a given project and a given filter', function (done) {
+      var query = {
+        fetch: 'Name,FormattedID,Rank,PlanEstimate,ScheduleState,Tasks,Pair,Defects,State,Owner,TaskIndex,Blocked',
+        order: 'Rank',
+        query: '((Project.Name = "project2") AND ((Iteration.StartDate <= "1970-01-01") AND ((Iteration.EndDate >= "1970-01-01") AND (Name contains "teste"))))',
+        pagesize: 100
+      };
+      var result = {
+        hierarchicalrequirement: {
+          Results: [
+            { FormattedID: 'US0000', Rank: 50, Tasks: [
+                { FormattedID: 'TA0000', TaskIndex: 3 },
+                { FormattedID: 'TA0001', TaskIndex: 1 },
+                { FormattedID: 'TA0002', TaskIndex: 2 },
+              ] },
+            { FormattedID: 'US0001', Rank: 52, Tasks: [] },
+          ]
+        },
+        defect: {
+          Results: [
+            { FormattedID: 'DE0000', Rank: 51, Tasks: [
+                { FormattedID: 'TA0003', TaskIndex: 1 },
+                { FormattedID: 'TA0004', TaskIndex: 11 },
+              ] },
+            { FormattedID: 'DE0001', Rank: 53, Tasks: [
+                { FormattedID: 'TA0005', TaskIndex: 0 }
+              ] },
+          ]
+        }
+      }
+      var mock = sinon.mock(this.ralio);
+      mock.expects('date').once().returns('1970-01-01');
+      var ex = mock.expects('bulk').once()
+        .withArgs({hierarchicalrequirement: query, defect: query});
+
+      this.ralio.sprint('project2', {find: "teste"}, function (error, stories) {
+        assert.equal(error, null);
+        assert.deepEqual(stories, [
+          { FormattedID: 'US0000', Rank: 50, Tasks: [
+              { FormattedID: 'TA0001', TaskIndex: 1 },
+              { FormattedID: 'TA0002', TaskIndex: 2 },
+              { FormattedID: 'TA0000', TaskIndex: 3 }
+            ] },
+          { FormattedID: 'DE0000', Rank: 51, Tasks: [
+              { FormattedID: 'TA0003', TaskIndex: 1 },
+              { FormattedID: 'TA0004', TaskIndex: 11 }
+            ] },
+          { FormattedID: 'US0001', Rank: 52, Tasks: [] },
+          { FormattedID: 'DE0001', Rank: 53, Tasks: [
+              { FormattedID: 'TA0005', TaskIndex: 0 }
+            ] },
+        ])
+        done();
+      });
+
+      ex.yield(null, result);
+    });
     it('should fetch the sprint stories for a given project', function (done) {
       var query = {
         fetch: 'Name,FormattedID,Rank,PlanEstimate,ScheduleState,Tasks,Pair,Defects,State,Owner,TaskIndex,Blocked',
@@ -225,7 +282,7 @@ describe('Ralio', function () {
       var ex = mock.expects('bulk').once()
         .withArgs({hierarchicalrequirement: query, defect: query});
 
-      this.ralio.sprint('project2', function (error, stories) {
+      this.ralio.sprint('project2', {}, function (error, stories) {
         assert.equal(error, null);
         assert.deepEqual(stories, [
           { FormattedID: 'US0000', Rank: 50, Tasks: [
