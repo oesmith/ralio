@@ -316,7 +316,7 @@ describe('Ralio', function () {
     it('should fetch the defect with the given ID', function (done) {
       var ex = sinon.mock(this.ralio).expects('bulk').once()
         .withArgs({ defect: {
-          fetch: 'Name,FormattedID,PlanEstimate,ScheduleState,Tasks,Pair,Defects,State,Owner,TaskIndex,Blocked,Project,ObjectID,Description',
+          fetch: 'Name,FormattedID,PlanEstimate,ScheduleState,Tasks,Tags,Pair,Defects,State,Owner,TaskIndex,Blocked,Project,ObjectID,Description',
           query: '(FormattedID = "DE4321")'
         }});
 
@@ -348,7 +348,7 @@ describe('Ralio', function () {
     it('should fetch the user story with the given ID', function (done) {
       var ex = sinon.mock(this.ralio).expects('bulk').once()
         .withArgs({ hierarchicalrequirement: {
-          fetch: 'Name,FormattedID,PlanEstimate,ScheduleState,Tasks,Pair,Defects,State,Owner,TaskIndex,Blocked,Project,ObjectID,Description',
+          fetch: 'Name,FormattedID,PlanEstimate,ScheduleState,Tasks,Tags,Pair,Defects,State,Owner,TaskIndex,Blocked,Project,ObjectID,Description',
           query: '(FormattedID = "US4321")'
         }});
 
@@ -380,7 +380,7 @@ describe('Ralio', function () {
     it('should fetch the user task with the given ID', function (done) {
       var ex = sinon.mock(this.ralio).expects('bulk').once()
         .withArgs({ task: {
-          fetch: 'Name,FormattedID,PlanEstimate,ScheduleState,Tasks,Pair,Defects,State,Owner,TaskIndex,Blocked,Project,ObjectID,Description',
+          fetch: 'Name,FormattedID,PlanEstimate,ScheduleState,Tasks,Tags,Pair,Defects,State,Owner,TaskIndex,Blocked,Project,ObjectID,Description',
           query: '(FormattedID = "TA4321")'
         }});
 
@@ -965,7 +965,7 @@ describe('Ralio', function () {
   describe('#current', function () {
     it('should fetch all the stories that the current user is working on', function (done) {
       var query = {
-        fetch: 'Name,FormattedID,Rank,PlanEstimate,ScheduleState,Tasks,Pair,State,Owner,TaskIndex,Blocked',
+        fetch: 'Name,FormattedID,Rank,PlanEstimate,ScheduleState,Tasks,Tags,Pair,State,Owner,TaskIndex,Blocked',
         order: 'Rank',
         query: '((Project.Name = "project3") AND ((Iteration.StartDate <= "1970-01-01") AND (Iteration.EndDate >= "1970-01-01")))',
         pagesize: 100
