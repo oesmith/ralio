@@ -7,7 +7,9 @@ require('sinon-mocha').enhance(sinon);
 
 var RALLY_HOST = "rally1.rallydev.com",
     RALLY_SERVER = "https://" + RALLY_HOST,
-    RALLY_BULK_PATH = "/slm/webservice/1.36/adhoc.js";
+    RALLY_BULK_PATH = "/slm/webservice/1.36/adhoc.js",
+    RALLY_PASSWORD = "password1",
+    RALLY_PASSWORD_ENCRYPTED = "cGFzc3dvcmQx";
 
 describe('Ralio', function () {
 
@@ -16,7 +18,7 @@ describe('Ralio', function () {
   });
 
   beforeEach(function () {
-    this.ralio = new Ralio('user1', 'password1');
+    this.ralio = new Ralio('user1', RALLY_PASSWORD_ENCRYPTED);
   });
 
   afterEach(function () {
@@ -27,7 +29,7 @@ describe('Ralio', function () {
     it('should insert auth credentials', function () {
       assert.equal(
         this.ralio.bulkUrl(),
-        'https://user1:password1@' + RALLY_HOST + RALLY_BULK_PATH);
+        'https://user1:'+ RALLY_PASSWORD +'@' + RALLY_HOST + RALLY_BULK_PATH);
     });
   });
 
@@ -583,7 +585,7 @@ describe('Ralio', function () {
         update.yield(null);
         bulk2.yield(null, { hierarchicalrequirement: { Results: [{ 'FormattedID': 'US0001' }] } });
       });
-      
+
       it('should set the ToDo time to 1 when the story state is In-Progress', function (done) {
         var ralio_mock = sinon.mock(this.ralio);
         var bulk1 = ralio_mock.expects('bulk').withArgs({
@@ -620,7 +622,7 @@ describe('Ralio', function () {
         update.yield(null);
         bulk2.yield(null, { hierarchicalrequirement: { Results: [{ 'FormattedID': 'US0001' }] } });
       });
-      
+
       it('should set the ToDo time to 1 when the defect state is Open/Defined', function (done) {
         var ralio_mock = sinon.mock(this.ralio);
         var bulk1 = ralio_mock.expects('bulk').withArgs({
@@ -657,7 +659,7 @@ describe('Ralio', function () {
         update.yield(null);
         bulk2.yield(null, { defect: { Results: [{ 'FormattedID': 'DE00001' }] } });
       });
-      
+
       it('should set the ToDo time to 1 when the task state is Completed', function (done) {
         var ralio_mock = sinon.mock(this.ralio);
         var bulk1 = ralio_mock.expects('bulk').withArgs({
@@ -695,7 +697,7 @@ describe('Ralio', function () {
       });
 
     });
-      
+
     it('should block story when block param is true', function (done) {
       var ralio_mock = sinon.mock(this.ralio);
       var bulk1 = ralio_mock.expects('bulk').withArgs({
@@ -733,7 +735,7 @@ describe('Ralio', function () {
       update.yield(null);
       bulk2.yield(null, { hierarchicalrequirement: { Results: [{ 'FormattedID': 'US0001' }] } });
     });
-    
+
     it('should block defect when block param is true', function (done) {
       var ralio_mock = sinon.mock(this.ralio);
       var bulk1 = ralio_mock.expects('bulk').withArgs({
@@ -771,7 +773,7 @@ describe('Ralio', function () {
       update.yield(null);
       bulk2.yield(null, { defect: { Results: [{ 'FormattedID': 'DE00001' }] } });
     });
-    
+
     it('should block task when block param is true', function (done) {
       var ralio_mock = sinon.mock(this.ralio);
       var bulk1 = ralio_mock.expects('bulk').withArgs({
@@ -846,7 +848,7 @@ describe('Ralio', function () {
       update.yield(null);
       bulk2.yield(null, { hierarchicalrequirement: { Results: [{ 'FormattedID': 'US0001' }] } });
     });
-    
+
     it('should unblock defect when block param is false', function (done) {
       var ralio_mock = sinon.mock(this.ralio);
       var bulk1 = ralio_mock.expects('bulk').withArgs({
@@ -884,7 +886,7 @@ describe('Ralio', function () {
       update.yield(null);
       bulk2.yield(null, { defect: { Results: [{ 'FormattedID': 'DE00001' }] } });
     });
-    
+
     it('should unblock task when block param is false', function (done) {
       var ralio_mock = sinon.mock(this.ralio);
       var bulk1 = ralio_mock.expects('bulk').withArgs({
@@ -1000,7 +1002,7 @@ describe('Ralio', function () {
 
       this.ralio.current('project3', function (error, stories) {
         assert.equal(error, null);
-      
+
         assert.deepEqual(stories, [
           { FormattedID: 'DE0001', Rank: 53, State: 'Open', Owner: { _ref: 'https://example.com/user' }, Tasks: [
               { FormattedID: 'TA0005', TaskIndex: 0, State: 'In-Progress', Owner: { _ref: 'https://example.com/user' } }
@@ -1101,7 +1103,7 @@ describe('#task', function() {
         assert.equal(error, null);
         assert.deepEqual(resource, {'_ref': 'https://example.com/task'});
         done();
-       }); 
+       });
 
        // mocked returns
        mock_request.yield(null, {'tag': {'TotalResultCount': 1, 'Results': [{'_ref': 'https://example.com/task'}]}});
@@ -1121,7 +1123,7 @@ describe('#task', function() {
         assert.equal(error, 'Tag UNKNOW TASK Not Found!');
         assert.deepEqual(resource, undefined);
         done();
-       }); 
+       });
 
        // mocked returns
        mock_request.yield(null, {'tag': {'TotalResultCount': 0, 'Results': []}});
@@ -1144,7 +1146,7 @@ describe('#task', function() {
         assert.equal(error, null);
         assert.deepEqual(resource, {'_ref': 'https://example.com/task'});
         done();
-       }); 
+       });
 
        // mocked returns
        mock_request.yield(null, {'task': {'TotalResultCount': 1, 'Results': [{'_ref': 'https://example.com/task'}]}});
@@ -1164,13 +1166,13 @@ describe('#task', function() {
         assert.equal(error, 'Task Not Found!');
         assert.deepEqual(resource, null);
         done();
-       }); 
+       });
 
        // mocked returns
        mock_request.yield(null, {'task': {'TotalResultCount': 0, 'Results': []}});
     });
     describe('createTask Method', function(){
-      it('should create a task with success without tags', function(done){ 
+      it('should create a task with success without tags', function(done){
         var clock = sinon.useFakeTimers();
         var ralio_mock = sinon.mock(this.ralio);
         var tag_request = ralio_mock.expects('getTags').withArgs([]);
@@ -1207,7 +1209,7 @@ describe('#task', function() {
         mock_request.yield(null, {'CreateResult':{'Object': {}}});
       });
 
-      it('should create a task with success with tags', function(done){ 
+      it('should create a task with success with tags', function(done){
         var clock = sinon.useFakeTimers();
 
         var ralio_mock = sinon.mock(this.ralio);
@@ -1247,12 +1249,12 @@ describe('#task', function() {
     });
 
     describe('deleteTask Method', function(){
-      it('should delete a task with success', function(done) { 
+      it('should delete a task with success', function(done) {
         var ralio_mock = sinon.mock(this.ralio);
         var get_task = ralio_mock.expects('getTask').withArgs('TA1234');
 
         var options = {
-          url: "https://user1:password1@rally1.rallydev.com/TA1234.js",
+          url: "https://user1:"+RALLY_PASSWORD+"@rally1.rallydev.com/TA1234.js",
           method: 'DELETE',
           json: {},
           strictSSL: !Ralio.test
@@ -1265,7 +1267,7 @@ describe('#task', function() {
         });
 
         done();
-        
+
         get_task.yield(null, {'_ref':'https://example.com/TA1234.js'})
         mock_request.yield(null, {});
       });
