@@ -22,7 +22,7 @@ product backlog, hence the different options.  If you don't work that way,
 put the same project name in both.
 
 Unfortunately, Rally doesn't use OAuth (or any other kind of API keys), so
-ralio needs your password.  I suggest you `chmod 0600 ~/.raliorc` to prevent
+ralio needs your password. It's obfuscated, but I suggest you `chmod 0600 ~/.raliorc` to prevent
 your password going walkies. In future I'll be stashing credentials in the OS
 key store.
 

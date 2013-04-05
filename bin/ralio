@@ -92,7 +92,7 @@ program
       ralio_configuration.username = username;
       
       program.password('Type your Rally\'s password: ', '*', function(password){
-        ralio_configuration.password = password;
+        ralio_configuration.password = new Buffer(password).toString('base64');
 
          program.prompt('Type your Rally\'s project: ', function(project){
           ralio_configuration.project = project;
