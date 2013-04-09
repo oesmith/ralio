@@ -522,6 +522,7 @@ describe('Ralio', function () {
         var update = ralio_mock.expects('update').withArgs('https://example.com/defect', {
             Defect: {
               Owner: null,
+              ScheduleState: 'Completed',
               State: 'Fixed',
               ToDo: 0.0,
               _ref: 'https://example.com/defect'
@@ -631,6 +632,7 @@ describe('Ralio', function () {
         var update = ralio_mock.expects('update').withArgs('https://example.com/defect', {
             Defect: {
               Owner: null,
+              ScheduleState: "In-Progress",
               State: 'Open',
               ToDo: 1.0,
               Estimate: 1.0,
@@ -744,6 +746,7 @@ describe('Ralio', function () {
       var update = ralio_mock.expects('update').withArgs('https://example.com/defect', {
           Defect: {
             Owner: null,
+            ScheduleState: "In-Progress",
             State: 'Open',
             ToDo: 1.0,
             Estimate: 1.0,
@@ -857,6 +860,7 @@ describe('Ralio', function () {
       var update = ralio_mock.expects('update').withArgs('https://example.com/defect', {
           Defect: {
             Owner: null,
+            ScheduleState: 'In-Progress',
             State: 'Open',
             ToDo: 1.0,
             Estimate: 1.0,
@@ -932,6 +936,7 @@ describe('Ralio', function () {
       var update = ralio_mock.expects('update').withArgs('https://example.com/defect', {
           Defect: {
             Owner: null,
+            ScheduleState: 'In-Progress',
             State: 'Open',
             ToDo: 1.0,
             Estimate: 1.0,
