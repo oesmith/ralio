@@ -125,7 +125,7 @@ See the built-in help:
   * [Igor Escobar](http://github.com/igorescobar)
   * [Tom Garbutt](http://github.com/tommg)
   
-Contributions very welcome! Please write tests for any new features - use [mocha](http://visionmedia.github.com/mocha/) to run the test suite.
+Contributions very welcome! Please write tests for any new features - use [mocha](http://visionmedia.github.com/mocha/) to run the test suite.  See [CONTRIBUTONG.md](CONTRIBUTONG.md) for development instructions.
 
 ## License
 
