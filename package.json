@@ -30,7 +30,7 @@
     "temp": "0.4.0"
   },
   "devDependencies": {
-    "nock": "0.13.3",
+    "nock": "0.18.2",
     "sinon": "1.4.2",
     "sinon-mocha": "0.0.3",
     "mocha": "~1.8.1"
