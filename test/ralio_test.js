@@ -16,7 +16,7 @@ describe('Ralio', function () {
   });
 
   beforeEach(function () {
-    this.ralio = new Ralio('user1', 'password1');
+    this.ralio = new Ralio(RALLY_SERVER, 'user1', 'password1');
   });
 
   afterEach(function () {

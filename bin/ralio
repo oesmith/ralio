@@ -3,7 +3,10 @@
 var program = require('commander'),
     CLI = require('../lib/cli');
 var package = require('../package.json');
-program.version(package.version);
+
+program
+  .version(package.version)
+  .option('-H, --host [host]','Rally host that will be used for all commands')
 
 program
   .command('backlog')
@@ -11,7 +14,7 @@ program
   .option('-a, --all', 'Show all stories (instead of just the top 20)')
   .option('-t, --tag [tag]', 'Show stories tagged with [tag]')
   .option('-p, --project [project]', 'Show backlog stories for project [project]')
-  .action(function (opts) { new CLI().backlog(opts) });
+  .action(function (opts) { new CLI(opts.parent.host).backlog(opts) });
 
 program
   .command('sprint')
@@ -20,23 +23,23 @@ program
   .option('-f, --find [term]', 'Find stories that matches with the term [term]')
   .option('-a, --accepted', 'Show accepted stories')
   .option('-p, --project [project]', 'Show sprint stories for project [project]')
-  .action(function (opts) { new CLI().sprint(opts) });
+  .action(function (opts) { new CLI(opts.parent.host).sprint(opts) });
 
 program
   .command('show <item>')
   .description('Show related information for an individual story, defect or task')
-  .action(function (item) { new CLI().show(item) });
+  .action(function (item, opts) { new CLI(opts.host).show(item) });
 
 program
   .command('open <item>')
   .description('Open a story, defect or task in a web browser')
-  .action(function (item) { new CLI().open(item) });
+  .action(function (item, opts) { new CLI(opts.parent.host).open(item) });
 
 program
   .command('start <item>')
   .option('-p, --pair [pair]', 'How\'s pair [pair] programming with you')
   .description('Set a task, defect or story state to in-progress and assign it to you')
-  .action(function (item, opts) { new CLI().start(item, opts) });
+  .action(function (item, opts) { new CLI(opts.parent.host).start(item, opts) });
 
 program
   .command('finish <item>')
@@ -44,32 +47,32 @@ program
   .option('-r, --resolution [resolution]', 'Set defect\'s resolution.')
   .option('-p, --pair [pair]', 'How\'s pair [pair] programming with you')
   .description('Set a task, defect or story state to completed and assign it to you')
-  .action(function (item, opts) { new CLI().finish(item, opts) });
+  .action(function (item, opts) { new CLI(opts.parent.host).finish(item, opts) });
 
 program
   .command('abandon <item>')
   .description('Set a task, defect or story state to defined and clear the owner')
-  .action(function (item) { new CLI().abandon(item) });
+  .action(function (item, opts) { new CLI(opts.parent.host).abandon(item) });
 
 program
   .command('block <item>')
   .description('Set a task, defect or story state to blocked')
-  .action(function (item) { new CLI().block(item) });
+  .action(function (item, opts) { new CLI(opts.parent.host).block(item) });
 
 program
   .command('unblock <item>')
   .description('Set a task, defect or story state to unblocked')
-  .action(function (item) { new CLI().unblock(item) });
+  .action(function (item, opts) { new CLI(opts.parent.host).unblock(item) });
 
 program
   .command('current')
   .description('Show your current tasks and stories')
-  .action(function () { new CLI().current() });
+  .action(function (opts) { new CLI(opts.parent.host).current() });
 
 program
   .command('point <story> <points>')
   .description('Set the points for a story or defect')
-  .action(function (story, points) { new CLI().point(story, parseInt(points, 10)) });
+  .action(function (story, points, opts) { new CLI(opts.parent.host).point(story, parseInt(points, 10)) });
 
 program
   .command('task <option> <target>')
@@ -80,7 +83,7 @@ program
   .option('-n, --name [name]', 'Name [name] of the task')
   .option('-t, --tags [tags]', 'List of [tags] separated by comma.')
   .option('-p, --project [project]', 'Create/delete a task from a specific project [project]')
-  .action(function (opts, option, target) { new CLI().task(opts, option, target) });
+  .action(function (opts, option, target) { new CLI(opts.parent.host).task(opts, option, target) });
 
 program
   .command('configure')
@@ -113,6 +116,10 @@ program
       });
     });
   });
+
+program
+  .command('*')
+  .action(function (opts) { console.log('Command not found! Try running ralio --help'.red); })
 
 program.on('--help', function(){
   console.log('  Usage Examples');
@@ -159,9 +166,6 @@ program.on('--help', function(){
   console.log('    $ ralio finish DE1234 --rootcause "Code Design/Error" --resolution "Code Change" --pair "Mark"');
   console.log('');
 });
-
-if(typeof program._events[process.argv[2]] === "undefined" && process.argv[2] !== "-V" && process.argv[2] !== "--version")
-  console.log('Command not found! Try running ralio --help'.red);
 
 program.parse(process.argv);
 
