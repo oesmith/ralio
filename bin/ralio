@@ -83,7 +83,7 @@ program
   .option('-n, --name [name]', 'Name [name] of the task')
   .option('-t, --tags [tags]', 'List of [tags] separated by comma.')
   .option('-p, --project [project]', 'Create/delete a task from a specific project [project]')
-  .action(function (opts, option, target) { new CLI(opts.parent.host).task(opts, option, target) });
+  .action(function (option, target, opts) { new CLI(opts.parent.host).task(option, target, opts) });
 
 program
   .command('configure')
