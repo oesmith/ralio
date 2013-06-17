@@ -7,7 +7,7 @@ require('sinon-mocha').enhance(sinon);
 
 var RALLY_HOST = "rally1.rallydev.com",
     RALLY_SERVER = "https://" + RALLY_HOST,
-    RALLY_BULK_PATH = "/slm/webservice/1.36/adhoc.js";
+    RALLY_BULK_PATH = "/slm/webservice/1.42/adhoc.js";
 
 describe('Ralio', function () {
 
@@ -23,13 +23,71 @@ describe('Ralio', function () {
     nock.cleanAll();
   });
 
-  describe('#bulkUrl', function () {
-    it('should insert auth credentials', function () {
+  describe('#prefixOf', function () {
+    it('should match single character prefixes', function () {
       assert.equal(
-        this.ralio.bulkUrl(),
-        'https://user1:password1@' + RALLY_HOST + RALLY_BULK_PATH);
+        this.ralio.prefixOf('S12345'),
+        'S'
+      );
+    });
+
+    it('should match two character prefixes', function () {
+      assert.equal(
+        this.ralio.prefixOf('US12345'),
+        'US'
+      );
     });
   });
+
+  describe('#rallyWsapiUrl', function () {
+     it('should insert auth credentials', function () {
+      var url = 'https://user1:password1@' + RALLY_HOST;
+      var len = url.length;
+       assert.equal(
+        this.ralio.rallyWsapiUrl().substring(0, len),
+        url);
+    });
+  });
+
+  describe('#artifact', function () {
+    it('should fetch the artifact with the given ForamttedID', function (done) {
+      var domainObject = sinon.stub(this.ralio, 'domainObject').yields(null, {
+        FormattedID: 'US4321', Name: 'Test Story'
+      });
+
+      this.ralio.artifact('US4321', {}, {}, function (error, artifact) {
+        assert.equal(error, null);
+        assert.deepEqual(artifact, {FormattedID: 'US4321', Name: 'Test Story'});
+        done();
+      });
+     });
+
+    it('should fetch the artifact with the given ForamttedID and its typedef', function (done) {
+      var domainObject = sinon.stub(this.ralio, 'domainObject').yields(null, {
+        FormattedID: 'US4321', Name: 'Test Story'
+      });
+
+      var typedef = sinon.stub(this.ralio, 'typedef').yields(null, {
+        type: 'hierarchicalrequirement'
+      });
+
+      this.ralio.artifact('US4321', {}, {typeDefinition: true}, function (error, artifact) {
+        assert.equal(error, null);
+        assert.deepEqual(artifact, {FormattedID: 'US4321', Name: 'Test Story', _typeDefinition:{type:'hierarchicalrequirement'}});
+        done();
+      });
+    });
+
+    it('should yield an error when no artifact is found with the given ForamttedID', function (done) {
+      var domainObject = sinon.stub(this.ralio, 'domainObject').yields('Not found.');
+
+      this.ralio.artifact('US4321', {}, {}, function (error, artifact) {
+        assert.equal(error, 'Not found.');
+        done();
+      });
+    });
+
+   });
 
   describe('#bulk', function () {
     it('should send bulk queries', function (done) {
@@ -584,7 +642,7 @@ describe('Ralio', function () {
         update.yield(null);
         bulk2.yield(null, { hierarchicalrequirement: { Results: [{ 'FormattedID': 'US0001' }] } });
       });
-      
+
       it('should set the ToDo time to 1 when the story state is In-Progress', function (done) {
         var ralio_mock = sinon.mock(this.ralio);
         var bulk1 = ralio_mock.expects('bulk').withArgs({
@@ -621,7 +679,7 @@ describe('Ralio', function () {
         update.yield(null);
         bulk2.yield(null, { hierarchicalrequirement: { Results: [{ 'FormattedID': 'US0001' }] } });
       });
-      
+
       it('should set the ToDo time to 1 when the defect state is Open/Defined', function (done) {
         var ralio_mock = sinon.mock(this.ralio);
         var bulk1 = ralio_mock.expects('bulk').withArgs({
@@ -659,7 +717,7 @@ describe('Ralio', function () {
         update.yield(null);
         bulk2.yield(null, { defect: { Results: [{ 'FormattedID': 'DE00001' }] } });
       });
-      
+
       it('should set the ToDo time to 1 when the task state is Completed', function (done) {
         var ralio_mock = sinon.mock(this.ralio);
         var bulk1 = ralio_mock.expects('bulk').withArgs({
@@ -697,7 +755,7 @@ describe('Ralio', function () {
       });
 
     });
-      
+
     it('should block story when block param is true', function (done) {
       var ralio_mock = sinon.mock(this.ralio);
       var bulk1 = ralio_mock.expects('bulk').withArgs({
@@ -735,7 +793,7 @@ describe('Ralio', function () {
       update.yield(null);
       bulk2.yield(null, { hierarchicalrequirement: { Results: [{ 'FormattedID': 'US0001' }] } });
     });
-    
+
     it('should block defect when block param is true', function (done) {
       var ralio_mock = sinon.mock(this.ralio);
       var bulk1 = ralio_mock.expects('bulk').withArgs({
@@ -774,7 +832,7 @@ describe('Ralio', function () {
       update.yield(null);
       bulk2.yield(null, { defect: { Results: [{ 'FormattedID': 'DE00001' }] } });
     });
-    
+
     it('should block task when block param is true', function (done) {
       var ralio_mock = sinon.mock(this.ralio);
       var bulk1 = ralio_mock.expects('bulk').withArgs({
@@ -849,7 +907,7 @@ describe('Ralio', function () {
       update.yield(null);
       bulk2.yield(null, { hierarchicalrequirement: { Results: [{ 'FormattedID': 'US0001' }] } });
     });
-    
+
     it('should unblock defect when block param is false', function (done) {
       var ralio_mock = sinon.mock(this.ralio);
       var bulk1 = ralio_mock.expects('bulk').withArgs({
@@ -888,7 +946,7 @@ describe('Ralio', function () {
       update.yield(null);
       bulk2.yield(null, { defect: { Results: [{ 'FormattedID': 'DE00001' }] } });
     });
-    
+
     it('should unblock task when block param is false', function (done) {
       var ralio_mock = sinon.mock(this.ralio);
       var bulk1 = ralio_mock.expects('bulk').withArgs({
@@ -1005,7 +1063,7 @@ describe('Ralio', function () {
 
       this.ralio.current('project3', function (error, stories) {
         assert.equal(error, null);
-      
+
         assert.deepEqual(stories, [
           { FormattedID: 'DE0001', Rank: 53, State: 'Open', Owner: { _ref: 'https://example.com/user' }, Tasks: [
               { FormattedID: 'TA0005', TaskIndex: 0, State: 'In-Progress', Owner: { _ref: 'https://example.com/user' } }
@@ -1106,7 +1164,7 @@ describe('#task', function() {
         assert.equal(error, null);
         assert.deepEqual(resource, {'_ref': 'https://example.com/task'});
         done();
-       }); 
+       });
 
        // mocked returns
        mock_request.yield(null, {'tag': {'TotalResultCount': 1, 'Results': [{'_ref': 'https://example.com/task'}]}});
@@ -1126,7 +1184,7 @@ describe('#task', function() {
         assert.equal(error, 'Tag UNKNOW TASK Not Found!');
         assert.deepEqual(resource, undefined);
         done();
-       }); 
+       });
 
        // mocked returns
        mock_request.yield(null, {'tag': {'TotalResultCount': 0, 'Results': []}});
@@ -1149,7 +1207,7 @@ describe('#task', function() {
         assert.equal(error, null);
         assert.deepEqual(resource, {'_ref': 'https://example.com/task'});
         done();
-       }); 
+       });
 
        // mocked returns
        mock_request.yield(null, {'task': {'TotalResultCount': 1, 'Results': [{'_ref': 'https://example.com/task'}]}});
@@ -1169,20 +1227,20 @@ describe('#task', function() {
         assert.equal(error, 'Task Not Found!');
         assert.deepEqual(resource, null);
         done();
-       }); 
+       });
 
        // mocked returns
        mock_request.yield(null, {'task': {'TotalResultCount': 0, 'Results': []}});
     });
     describe('createTask Method', function(){
-      it('should create a task with success without tags', function(done){ 
+      it('should create a task with success without tags', function(done){
         var clock = sinon.useFakeTimers();
         var ralio_mock = sinon.mock(this.ralio);
         var tag_request = ralio_mock.expects('getTags').withArgs([]);
         var story_request = ralio_mock.expects('story').withArgs('US1234');
 
         var options = {
-          url: this.ralio.bulkUrl({"pathname":"/slm/webservice/1.36/task/create.js"}),
+          url: this.ralio.bulkUrl({"pathname":"/slm/webservice/1.42/task/create.js"}),
           method: 'POST',
           json: {
             Task: {
@@ -1212,7 +1270,7 @@ describe('#task', function() {
         mock_request.yield(null, {'CreateResult':{'Object': {}}});
       });
 
-      it('should create a task with success with tags', function(done){ 
+      it('should create a task with success with tags', function(done){
         var clock = sinon.useFakeTimers();
 
         var ralio_mock = sinon.mock(this.ralio);
@@ -1220,7 +1278,7 @@ describe('#task', function() {
         var story_request = ralio_mock.expects('story').withArgs('US1234');
 
         var options = {
-          url: this.ralio.bulkUrl({"pathname":"/slm/webservice/1.36/task/create.js"}),
+          url: this.ralio.bulkUrl({"pathname":"/slm/webservice/1.42/task/create.js"}),
           method: 'POST',
           json: {
             Task: {
@@ -1252,7 +1310,7 @@ describe('#task', function() {
     });
 
     describe('deleteTask Method', function(){
-      it('should delete a task with success', function(done) { 
+      it('should delete a task with success', function(done) {
         var ralio_mock = sinon.mock(this.ralio);
         var get_task = ralio_mock.expects('getTask').withArgs('TA1234');
 
@@ -1270,7 +1328,7 @@ describe('#task', function() {
         });
 
         done();
-        
+
         get_task.yield(null, {'_ref':'https://example.com/TA1234.js'})
         mock_request.yield(null, {});
       });
@@ -1297,5 +1355,39 @@ describe('#task', function() {
     });
   });
 });
+
+
+describe('#editor', function () {
+  before(function () {
+    if (typeof process.env.VISUAL !== 'undefined') this.VISUAL_ORIG=process.env.VISUAL;
+    if (typeof process.env.EDITOR !== 'undefined') this.EDITOR_ORIG=process.env.EDITOR;
+  });
+
+  afterEach(function () {
+    typeof this.VISUAL_ORIG == 'undefined' ? delete process.env.VISUAL : process.env.VISUAL=this.VISUAL_ORIG;
+    typeof this.EDITOR_ORIG == 'undefined' ? delete process.env.EDITOR : process.env.EDITOR=this.EDITOR_ORIG;
+  });
+
+  it('should callback with {success: true} when $EDITOR exit code is 0', function (done) {
+    process.env.EDITOR='/usr/bin/true';
+
+    this.ralio.editor("a phrase to edit", {}, function(result) {
+      assert.equal(result.success, true);
+      done();
+    });
+  });
+
+  it('should callback with {success: false} when $EDITOR exit code is non-0', function (done) {
+    process.env.EDITOR='/usr/bin/false';
+
+    this.ralio.editor("a phrase to edit", {}, function(result) {
+      assert.equal(result.success, false);
+      done();
+    });
+  });
+
+
+});
+
 
 });
