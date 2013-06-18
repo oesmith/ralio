@@ -4,7 +4,6 @@ A *usable* command-line client for rally.
 
 [![Build Status](https://travis-ci.org/oesmith/ralio.png)](https://travis-ci.org/oesmith/ralio)
 
-
 ## Installation
 
     $ npm install -g ralio
@@ -44,6 +43,9 @@ See the built-in help:
         
         show <item>
         Show related information for an individual story, defect or task
+        
+        edit <item> <field>
+        Edit a field of an individual story, defect or task in the system EDITOR
         
         open <item>
         Open a story, defect or task in a web browser
@@ -121,8 +123,13 @@ See the built-in help:
         $ ralio start TA1234 --pair "Mark"
         $ ralio finish TA1234 --pair "Mark"
 
-## Contributors
+## Maintainers
+  * [Olly Smith](http://github.com/oesmith)
   * [Igor Escobar](http://github.com/igorescobar)
+  
+## Contributors
+  * [Brian Dupras](http://github.com/bdupras)
+  * [Adam Esterline](http://github.com/aesterline)
   * [Tom Garbutt](http://github.com/tommg)
   
 Contributions very welcome! Please write tests for any new features - use [mocha](http://visionmedia.github.com/mocha/) to run the test suite.  See [CONTRIBUTONG.md](CONTRIBUTONG.md) for development instructions.
