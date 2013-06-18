@@ -1359,17 +1359,17 @@ describe('#task', function() {
 
 describe('#editor', function () {
   before(function () {
-    if (typeof process.env.VISUAL !== 'undefined') this.VISUAL_ORIG=process.env.VISUAL;
-    if (typeof process.env.EDITOR !== 'undefined') this.EDITOR_ORIG=process.env.EDITOR;
+    if (typeof process.env.VISUAL !== 'undefined') this.VISUAL_ORIG = process.env.VISUAL;
+    if (typeof process.env.EDITOR !== 'undefined') this.EDITOR_ORIG = process.env.EDITOR;
   });
 
   afterEach(function () {
-    typeof this.VISUAL_ORIG == 'undefined' ? delete process.env.VISUAL : process.env.VISUAL=this.VISUAL_ORIG;
-    typeof this.EDITOR_ORIG == 'undefined' ? delete process.env.EDITOR : process.env.EDITOR=this.EDITOR_ORIG;
+    typeof this.VISUAL_ORIG == 'undefined' ? delete process.env.VISUAL : process.env.VISUAL = this.VISUAL_ORIG;
+    typeof this.EDITOR_ORIG == 'undefined' ? delete process.env.EDITOR : process.env.EDITOR = this.EDITOR_ORIG;
   });
 
   it('should callback with {success: true} when $EDITOR exit code is 0', function (done) {
-    process.env.EDITOR='/usr/bin/true';
+    process.env.EDITOR = '/usr/bin/true';
 
     this.ralio.editor("a phrase to edit", {}, function(result) {
       assert.equal(result.success, true);
@@ -1378,7 +1378,7 @@ describe('#editor', function () {
   });
 
   it('should callback with {success: false} when $EDITOR exit code is non-0', function (done) {
-    process.env.EDITOR='/usr/bin/false';
+    process.env.EDITOR = '/usr/bin/false';
 
     this.ralio.editor("a phrase to edit", {}, function(result) {
       assert.equal(result.success, false);
@@ -1386,8 +1386,6 @@ describe('#editor', function () {
     });
   });
 
-
 });
-
 
 });
