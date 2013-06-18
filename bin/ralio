@@ -31,6 +31,11 @@ program
   .action(function (item, opts) { new CLI(opts.host).show(item) });
 
 program
+  .command('edit <item> <field>')
+  .description('Edit a field of an individual story, defect or task in the system EDITOR')
+  .action(function (item, field, opts) { new CLI(opts.parent.host).edit(item, field) });
+
+program
   .command('open <item>')
   .description('Open a story, defect or task in a web browser')
   .action(function (item, opts) { new CLI(opts.parent.host).open(item) });
