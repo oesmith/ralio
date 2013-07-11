@@ -80,6 +80,11 @@ program
   .action(function (story, points, opts) { new CLI(opts.parent.host).point(story, parseInt(points, 10)) });
 
 program
+  .command('time <task> <hours>')
+  .description('Add a timesheet entry for a task')
+  .action(function (task, hours, opts) { new CLI(opts.parent.host).time(task, parseFloat(hours)) });
+
+program
   .command('task <option> <target>')
   .description('Allow you to create and delete story tasks.\n' + 
       'Available options <option> [create|delete].\n' + 
@@ -150,6 +155,10 @@ program.on('--help', function(){
   console.log('');
   console.log('    $ ralio point US1234');
   console.log('    $ ralio point DE1234');
+  console.log('');
+  console.log('  Adding a timesheet entry for a task:');
+  console.log('');
+  console.log('    $ ralio time TA1234 1.5');
   console.log('');
   console.log('  Viewing your current sprint story and/or tasks:');
   console.log('');
