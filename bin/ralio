@@ -70,6 +70,12 @@ program
   .action(function (item, opts) { new CLI(opts.parent.host).unblock(item) });
 
 program
+  .command('discuss <item>')
+  .option('-a, --add <comment>', 'Add a comment to the discussion')
+  .description('View or add to the discussion items for a task, defect or story state')
+  .action(function (item, opts) { new CLI(opts.parent.host).discuss(item, opts); });
+
+program
   .command('current')
   .description('Show your current tasks and stories')
   .action(function (opts) { new CLI(opts.parent.host).current() });
