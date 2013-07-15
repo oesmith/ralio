@@ -70,10 +70,12 @@ program
   .action(function (item, opts) { new CLI(opts.parent.host).unblock(item) });
 
 program
-  .command('discuss <item>')
-  .option('-a, --add <comment>', 'Add a comment to the discussion')
-  .description('View or add to the discussion items for a task, defect or story state')
-  .action(function (item, opts) { new CLI(opts.parent.host).discuss(item, opts); });
+  .command('discuss <option> <item> [message]')
+  .description('View or add to the discussion items for a task, defect or story state.\n' +
+      'Available options <option> [show|add].\n' +
+      'In case of <option> show, <item> is the task to show discussion for.\n' +
+      'In case of <option> add, <item> is the task to which to add a comment.')
+  .action(function (option, item, message, opts) { new CLI(opts.parent.host).discuss(option, item, message, opts); });
 
 program
   .command('current')
