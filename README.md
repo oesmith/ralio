@@ -132,7 +132,7 @@ See the built-in help:
   * [Adam Esterline](http://github.com/aesterline)
   * [Tom Garbutt](http://github.com/tommg)
   
-Contributions very welcome! Please write tests for any new features - use [mocha](http://visionmedia.github.com/mocha/) to run the test suite.  See [CONTRIBUTONG.md](CONTRIBUTONG.md) for development instructions.
+Contributions very welcome! Please write tests for any new features - use [mocha](http://mochajs.org/) to run the test suite.  See [CONTRIBUTONG.md](CONTRIBUTONG.md) for development instructions.
 
 ## License
 
